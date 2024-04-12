@@ -1,0 +1,62 @@
+### Estrutura
+
+API A: Produtos
+    files
+    container
+        Dockerfile
+        docker-compose.yml
+    src
+        Produtos.Service
+            Controllers
+            Handlers
+            Middlewares
+            Extensions
+            appsettings.json
+            appsettings.Development.json
+            appsettings.Production.json
+            appsettings.Stage.json
+        Produtos.Application
+            AutoMappers
+            DTOs
+            Services
+            Interfaces
+        Produtos.Integration
+            Services
+            Interfaces
+        Produtos.Data
+            Context
+            Mappings
+            Migrations
+            Repository            
+        Produtos.Domain
+            Converters
+            Errors
+            Exceptions
+            Models
+            Repository
+            Validations
+            ValueObjects
+        Produtos.CrossCutting
+            IoC
+            Helpers
+            Loggers
+            Cache
+    tests
+        Produto.Tests
+        Config
+        Unit
+            Service
+            Application
+            Domain
+        Integration
+        Utils
+    .gitignore
+    README.md
+    Produtos.sln
+
+### Migrations
+Criação de migrations no dotnet:
+
+##### Deve estar na pasta Autenticacao/src/Autenticacao.Service
+dotnet ef migrations add Inicial --context AutenticacaoContext --project ../Autenticacao.Data/Autenticacao.Data.csproj
+dotnet ef database update --context AutenticacaoContext --project ../Autenticacao.Data/Autenticacao.Data.csproj

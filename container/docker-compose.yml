@@ -1,0 +1,148 @@
+version: '3.9'
+
+services:
+    autenticacao-api:
+      container_name: autenticacao-api
+      build: 
+        context: ./
+      tty: true
+      ports:
+        - "5000:5000"
+      volumes:
+        - ../microsservicos/Autenticacao:/app
+      environment:
+        "ASPNETCORE_URLS": "https://+;http://+"
+      depends_on:
+        - mysql-autenticacao
+      networks: 
+        - local    
+
+    mysql-autenticacao:
+      container_name: mysql-autenticacao
+      platform: linux/x86_64
+      image: mysql:8.0.36-debian
+      command: --default-authentication-plugin=mysql_native_password
+      restart: always
+      environment:
+        MYSQL_DATABASE: autenticacao
+        MYSQL_USER: admin
+        MYSQL_PASSWORD: JS6NJvyddMpavyu5Uh56dowe
+        MYSQL_ROOT_PASSWORD: JS6NJvyddMpavyu5Uh56dowe
+      ports:
+        - '3316:3306'
+      expose:
+        - '3316'
+      volumes:
+        - ../data/mysql_autenticacao:/var/lib/mysql
+      networks: 
+        - local
+        
+    pedidos-api:
+      container_name: pedidos-api
+      build: 
+        context: ./
+      tty: true
+      ports:
+        - "5001:5001"
+      volumes:
+        - ../microsservicos/Produtos:/app
+      depends_on:
+        - mysql-pedidos
+      networks: 
+        - local
+        
+    mysql-pedidos:
+      container_name: mysql-pedidos
+      platform: linux/x86_64
+      image: mysql:8.0.36-debian
+      command: --default-authentication-plugin=mysql_native_password
+      restart: always
+      environment:
+        MYSQL_DATABASE: pedidos
+        MYSQL_USER: admin
+        MYSQL_PASSWORD: JS6NJvyddMpavyu5Uh56dowe
+        MYSQL_ROOT_PASSWORD: JS6NJvyddMpavyu5Uh56dowe
+      ports:
+        - '3326:3306'
+      expose:
+        - '3326'
+      volumes:
+        - ../data/mysql_pedidos:/var/lib/mysql
+      networks: 
+        - local
+
+    produtos-api:
+      container_name: produtos-api
+      build: 
+        context: ./
+      tty: true
+      ports:
+        - "5002:5002"
+      volumes:
+        - ../microsservicos/Produtos:/app
+      depends_on:
+        - mysql-produtos
+      networks: 
+        - local
+    
+    mysql-produtos:
+      container_name: mysql-produtos
+      platform: linux/x86_64
+      image: mysql:8.0.36-debian
+      command: --default-authentication-plugin=mysql_native_password
+      restart: always
+      environment:
+        MYSQL_DATABASE: produtos
+        MYSQL_USER: admin
+        MYSQL_PASSWORD: JS6NJvyddMpavyu5Uh56dowe
+        MYSQL_ROOT_PASSWORD: JS6NJvyddMpavyu5Uh56dowe
+      ports:
+        - '3336:3306'
+      expose:
+        - '3336'
+      volumes:
+        - ../data/mysql_produtos:/var/lib/mysql
+      networks: 
+        - local
+
+    rabbitmq-ecommerce:
+      container_name: rabbitmq-ecommerce
+      image: rabbitmq:3.13-management
+      hostname: rabbitmq
+      ports:
+        - 25672:25672 # (erlang) communication between the nodes and CLI tool
+        - 15672:15672 # communication with the web management API
+      volumes:
+        - ../data/rabbitmq:/var/lib/rabbitmq
+      environment:
+      - RABBITMQ_DEFAULT_USER=teste
+      - RABBITMQ_DEFAULT_PASS=teste
+      - CLUSTERED=false
+      restart: always
+      networks:
+        - local
+
+    redis-ecommerce:
+      container_name: redis-ecommerce
+      image: redis:7.2.4
+      ports:
+        - "6379:6379"
+      volumes:
+        -  ../data/redis:/data
+      networks:
+        - local
+
+    redisinsight-ecommerce:
+      container_name: redisinsight-ecommerce
+      image: redislabs/redisinsight:1.14.0
+      restart: always
+      ports:
+        - "8010:8001"
+      volumes:
+        - ../data/redisinsight:/db 
+      networks:
+        - local
+        
+networks: 
+  local:
+    name: local
