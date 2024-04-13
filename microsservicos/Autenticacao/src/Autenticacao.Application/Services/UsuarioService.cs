@@ -22,7 +22,7 @@ public class UsuarioService : IUsuarioService
     {
         var usuarioAutenticado = await _usuarioRepository.ObterPorEmailSenha(usuario.Email, usuario.Senha);
 
-        if (usuarioAutenticado == null)
+        if (usuarioAutenticado is null)
             throw new AuthException("E-mail ou senha incorretos");
 
         return _tokenService.GerarAccesToken(usuarioAutenticado);

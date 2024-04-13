@@ -18,11 +18,6 @@ public class AutenticacaoContext : DbContext, IUnitOfWork
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AutenticacaoContext).Assembly);
     }
 
-    // protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-    // {
-    //     configurationBuilder.Conventions.Add(_ => new BlankTriggerAddingConvention());
-    // }
-
     public async Task<bool> Commit()
     {
         foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("DataHorarioCadastro") != null))

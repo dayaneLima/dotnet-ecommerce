@@ -8,6 +8,8 @@ namespace Autenticacao.Service.Controllers;
 
 [ApiController]
 [Route("v1/autenticacao")]
+[Produces("application/json")]
+[ApiExplorerSettings(GroupName = "Autenticação")]
 public class AutenticacaoController : ControllerBase
 {
     private readonly IUsuarioService _usuarioService;
@@ -20,7 +22,7 @@ public class AutenticacaoController : ControllerBase
     [HttpPost]
     [Route("login")]
     [AllowAnonymous]
-    public async Task<ActionResult<dynamic>> Autenticar([FromBody] LoginDTO login)
+    public async Task<ActionResult<AccessTokenDTO>> Autenticar([FromBody] LoginDTO login)
     {
         return await _usuarioService.AutenticarUsuario(new Usuario() {Senha= login.Senha, Email= login.Email});
     }

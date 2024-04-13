@@ -22,7 +22,7 @@ public class TokenService : ITokenService
         SecurityToken securityToken = tokenHandler.CreateToken(tokenSpecificationDescriptor);
         string token = tokenHandler.WriteToken(securityToken);
 
-        return new AccessTokenDTO(token, usuario.Nome, usuario.Role);
+        return new AccessTokenDTO(token);
     }
 
     private SecurityTokenDescriptor DescribeTokenSpecification(Usuario usuario, byte[] key)
@@ -41,8 +41,8 @@ public class TokenService : ITokenService
     {
         ClaimsIdentity claimsIdentity = new ClaimsIdentity(new Claim[]
         {
+            new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
             new Claim(ClaimTypes.Name, usuario.Nome.ToString()),
-            new Claim(ClaimTypes.Role, usuario.Role.ToString())
         });
 
         return claimsIdentity;

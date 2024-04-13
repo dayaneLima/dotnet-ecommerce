@@ -33,7 +33,6 @@ public class UsuarioMapping : IEntityTypeConfiguration<Usuario>
                 .HasMaxLength(255)
                 .HasColumnType("varchar(255)");
 
-
         builder.Property(e => e.DataHorarioCadastro).IsRequired();
 
         builder.ToTable("Usuarios");
