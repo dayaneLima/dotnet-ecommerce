@@ -42,10 +42,6 @@ public class UsuarioMapping : IEntityTypeConfiguration<Produto>
                 .HasMaxLength(255)
                 .HasColumnType("varchar(255)");
 
-        builder.Property(e => e.IdUsuario)
-                .IsRequired()
-                .HasColumnType("int(10) unsigned");
-
         builder.Property(e => e.DataHorarioCadastro).IsRequired();
         builder.Property(e => e.DataHorarioAtualizacao).IsRequired();
         builder.Property(e => e.DataHorarioExclusao).IsRequired(false);
