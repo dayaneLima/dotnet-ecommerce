@@ -32,6 +32,11 @@ public class ProdutoService : IProdutoService
 
     public async Task<ProdutoRetornoDTO> Atualizar(int id, ProdutoDTO produtoDTO)
     {
+        var produtoBanco = await Obter(id);
+
+        if (produtoBanco is null)
+            throw new NotFoundException("Produto não encontrado!");
+
         var produto = _mapper.Map<Produto>(produtoDTO);
         produto.Id = id;
 
@@ -47,13 +52,20 @@ public class ProdutoService : IProdutoService
     public async Task<ProdutoRetornoDTO> Obter(int id)
     {
         var produto = await _produtoRepository.ObterPorId(id);
+
+        if (produto is null)
+            throw new NotFoundException("Produto não encontrado!");
+
         return _mapper.Map<ProdutoRetornoDTO>(produto);
     }
 
     public async Task Excluir(int id)
     {
         _produtoRepository.Excluir(id);
-        await _produtoRepository.UnitOfWork.Commit();
+        var produtoExcluido = await _produtoRepository.UnitOfWork.Commit();
+        
+        if (!produtoExcluido)
+            throw new NotFoundException("Produto não encontrado!");
     }
 
     public async Task<IEnumerable<ProdutoRetornoDTO>> Listar()

@@ -42,3 +42,5 @@ logs/
 
 # producao
 dist/
+
+.mono/*
