@@ -18,7 +18,7 @@ public class UsuarioService : IUsuarioService
 
     public async Task<AccessTokenDTO> AutenticarUsuario(LoginDTO login)
     {
-        var usuarioAutenticado = await _usuarioRepository.ObterPorEmail(login.Email);
+        var usuarioAutenticado = await _usuarioRepository.ObterPorEmail(login.Email!);
 
         if (usuarioAutenticado is null || !BCrypt.Net.BCrypt.Verify(login.Senha, usuarioAutenticado.Senha))
             throw new AuthException("E-mail ou senha incorretos");

@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Autenticacao.Application\Autenticacao.Application.csproj" />
+    <ProjectReference Include="..\Autenticacao.Data\Autenticacao.Data.csproj" />
     <ProjectReference Include="..\Autenticacao.CrossCutting\Autenticacao.CrossCutting.csproj" />
   </ItemGroup>
 

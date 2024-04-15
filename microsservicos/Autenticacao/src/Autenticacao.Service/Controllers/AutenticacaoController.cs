@@ -26,9 +26,9 @@ public class AutenticacaoController : ControllerBase
         return await _usuarioService.AutenticarUsuario(login);
     }
 
-    [HttpGet]
-    [Authorize]
-    [Route("authenticated")]
-    public string Authenticated() => String.Format("Authenticated - {0}", "asdas");
+    // [HttpGet]
+    // [Authorize]
+    // [Route("authenticated")]
+    // public string Authenticated() => String.Format("Authenticated - {0}", "asdas");
     // public string Authenticated() => String.Format("Authenticated - {0}", User?.Identity?.Name);
 }

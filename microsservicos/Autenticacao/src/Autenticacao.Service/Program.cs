@@ -32,7 +32,7 @@ builder.Services.AddStackExchangeRedisCache(action=>{
 
 builder.Services.AddAutenticationJwt(builder.Configuration);
 
-// builder.Services.AddCustomizacaoErros();
+builder.Services.AddCustomizacaoErros();
 // builder.Services.AddHttpContextAccessor();
 
 
