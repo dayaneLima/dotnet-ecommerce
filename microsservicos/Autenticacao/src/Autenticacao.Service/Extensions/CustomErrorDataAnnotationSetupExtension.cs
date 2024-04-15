@@ -1,7 +1,5 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Autenticacao.Domain.Errors;
 using Autenticacao.Application.DTOs;
 
 namespace Autenticacao.Service.Extensions;

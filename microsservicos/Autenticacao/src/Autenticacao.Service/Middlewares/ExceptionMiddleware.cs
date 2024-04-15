@@ -1,7 +1,4 @@
-using System;
 using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 using Autenticacao.Application.DTOs;
 using Autenticacao.Domain.Exceptions;
@@ -37,11 +34,11 @@ public class ExceptionMiddleware
         if (exception is EntityErrorException) 
         {
             statusCode = (int) HttpStatusCode.BadRequest;
-            errorDTO.Descriptions = ((EntityErrorException) exception).EntityError.Descriptions;
+            errorDTO.Descriptions = ((EntityErrorException) exception).EntityError!.Descriptions;
         }
 
         if (exception is HttpErrorException) 
-            statusCode = (int) ((HttpErrorException) exception).StatusCode;
+            statusCode = ((HttpErrorException) exception).StatusCode;
 
         if (exception is AuthException) 
             statusCode = (int) HttpStatusCode.Unauthorized;

@@ -1,7 +1,5 @@
-using System;
 using Autenticacao.Application.Interfaces;
 using Autenticacao.Domain.Repository;
-using Autenticacao.Domain.Models;
 using Autenticacao.Domain.Exceptions;
 using Autenticacao.Application.DTOs;
 
@@ -18,14 +16,14 @@ public class UsuarioService : IUsuarioService
         _tokenService = tokenService;
     }
 
-    public async Task<AccessTokenDTO> AutenticarUsuario(Usuario usuario)
+    public async Task<AccessTokenDTO> AutenticarUsuario(LoginDTO login)
     {
-        var usuarioAutenticado = await _usuarioRepository.ObterPorEmailSenha(usuario.Email, usuario.Senha);
+        var usuarioAutenticado = await _usuarioRepository.ObterPorEmail(login.Email);
 
-        if (usuarioAutenticado is null)
+        if (usuarioAutenticado is null || !BCrypt.Net.BCrypt.Verify(login.Senha, usuarioAutenticado.Senha))
             throw new AuthException("E-mail ou senha incorretos");
 
-        return _tokenService.GerarAccesToken(usuarioAutenticado);
+        return _tokenService.GerarAccesToken(usuarioAutenticado!);
     }
 }
   

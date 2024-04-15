@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Autenticacao.Data.Context;
 using Autenticacao.Domain.Repository.Core;
@@ -24,7 +20,11 @@ public abstract class Repository<T> : IRepository<T> where T : class
 
     public virtual T Atualizar(T entity) => _dbSet.Update(entity).Entity;
 
-    public virtual void Excluir(int id) => _dbSet.Remove(_dbSet.Find(id));
+    public virtual void Excluir(int id)
+    {
+        var entity = _dbSet.Find(id);
+        if (entity is not null) _dbSet.Remove(entity);
+    }
 
     public virtual IEnumerable<T> ObterTodos() => _dbSet.ToList();
 

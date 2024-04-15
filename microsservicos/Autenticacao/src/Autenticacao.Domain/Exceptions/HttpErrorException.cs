@@ -1,5 +1,3 @@
-using System;
-
 namespace Autenticacao.Domain.Exceptions;
 
 public class HttpErrorException : Exception

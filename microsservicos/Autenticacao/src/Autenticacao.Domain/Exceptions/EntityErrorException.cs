@@ -1,11 +1,10 @@
-using System;
 using Autenticacao.Domain.Errors;
 
 namespace Autenticacao.Domain.Exceptions;
 
 public class EntityErrorException: Exception
 {
-    public EntityError EntityError { get; }
+    public EntityError? EntityError { get; }
 
     public EntityErrorException() { }
 

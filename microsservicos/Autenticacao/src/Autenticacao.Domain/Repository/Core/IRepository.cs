@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Autenticacao.Domain.Repository.Core;
 
 public interface IRepository<T> : IDisposable where T : class

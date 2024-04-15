@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Autenticacao.Application.Interfaces;
-using Autenticacao.Domain.Models;
 using Autenticacao.Application.DTOs;
 
 namespace Autenticacao.Service.Controllers;
@@ -24,7 +23,7 @@ public class AutenticacaoController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<AccessTokenDTO>> Autenticar([FromBody] LoginDTO login)
     {
-        return await _usuarioService.AutenticarUsuario(new Usuario() {Senha= login.Senha, Email= login.Email});
+        return await _usuarioService.AutenticarUsuario(login);
     }
 
     [HttpGet]

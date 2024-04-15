@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 
-builder.Services.AddDIConfiguration();
+builder.Services.AddDIConfiguration(builder.Configuration);
 
 builder.Services.AddAutoMapper(typeof(AutoMapperMappingProfile));
 
@@ -25,11 +25,15 @@ builder.Services.AddDbContext<AutenticacaoContext>(options => options
     ServiceLifetime.Scoped
 );
 
+builder.Services.AddStackExchangeRedisCache(action=>{
+    var connection = "redis-ecommerce:6379";
+    action.Configuration = connection;
+});
+
 builder.Services.AddAutenticationJwt(builder.Configuration);
 
 // builder.Services.AddCustomizacaoErros();
-
-// builder.Service.AddHttpContextAccessor();
+// builder.Services.AddHttpContextAccessor();
 
 
 var app = builder.Build();
@@ -40,7 +44,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.ConfigureCustomExceptionMiddleware();
+app.ConfigureCustomExceptionMiddleware();
 
 app.UseHttpsRedirection();
 app.UseRouting();

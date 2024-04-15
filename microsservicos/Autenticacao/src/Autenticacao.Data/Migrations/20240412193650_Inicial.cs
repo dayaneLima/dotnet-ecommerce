@@ -33,7 +33,7 @@ namespace Autenticacao.Data.Migrations
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
-                migrationBuilder.InsertData(table: "Usuarios", columns: ["Nome", "Email", "Senha", "DataHorarioCadastro"], values: ["Teste", "teste@teste.com", "123456", DateTime.Now]);
+                migrationBuilder.InsertData(table: "Usuarios", columns: ["Nome", "Email", "Senha", "DataHorarioCadastro"], values: ["Teste", "teste@teste.com", BCrypt.Net.BCrypt.HashPassword("123456"), DateTime.Now]);
         }
 
         /// <inheritdoc />

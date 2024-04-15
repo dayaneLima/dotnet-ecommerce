@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -12,7 +11,7 @@ public class ErrorDTO
     public int StatusCode { get; set; }
     
     [JsonPropertyName("message")]
-    public string Message { get; set; }
+    public string? Message { get; set; }
 
     [JsonPropertyName("descriptions")]
     public ICollection<ErrorModel> Descriptions { get; set; }

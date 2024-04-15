@@ -1,8 +1,4 @@
-using System;
-using System.IO;
-using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
 namespace Autenticacao.Service.Extensions;
@@ -63,10 +59,6 @@ public static class SwaggerExtension
             });
 
             c.DocInclusionPredicate((name, api) => true);
-            
-            // var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            // c.IncludeXmlComments(xmlPath);
         });  
     }
 }
