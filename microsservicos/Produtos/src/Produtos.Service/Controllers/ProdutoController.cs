@@ -26,19 +26,22 @@ public class ProdutoController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<ActionResult<ProdutoRetornoDTO>> Atualizar([FromRoute] int idProduto, [FromBody] ProdutoDTO produto)
+    [Route("{idProduto}")]
+    public async Task<ActionResult<ProdutoRetornoDTO>> Atualizar(int idProduto, [FromBody] ProdutoDTO produto)
     {
         return await _produtoService.Atualizar(idProduto, produto);
     }
 
     [HttpGet]
-    public async Task<ActionResult<ProdutoRetornoDTO>> Obter([FromRoute] int idProduto)
+    [Route("{idProduto}")]
+    public async Task<ActionResult<ProdutoRetornoDTO>> Obter(int idProduto)
     {
         return await _produtoService.Obter(idProduto);
     }
 
     [HttpDelete]
-    public async Task Excluir([FromRoute] int idProduto)
+    [Route("{idProduto}")]
+    public async Task Excluir(int idProduto)
     {
         await _produtoService.Excluir(idProduto);
     }
