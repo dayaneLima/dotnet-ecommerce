@@ -4,5 +4,9 @@ namespace Produtos.Application.Interfaces;
 
 public interface IProdutoService
 {
-    Task<ProdutoDTO> Inserir(ProdutoDTO produtoDTO);
+    Task<ProdutoRetornoDTO> Inserir(ProdutoDTO produtoDTO);
+    Task<ProdutoRetornoDTO> Atualizar(int id, ProdutoDTO produtoDTO);
+    Task<ProdutoRetornoDTO> Obter(int id);
+    Task Excluir(int id);
+    Task<IEnumerable<ProdutoRetornoDTO>> Listar();
 }

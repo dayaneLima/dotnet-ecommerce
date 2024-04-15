@@ -9,6 +9,7 @@ namespace Produtos.Service.Controllers;
 [Route("v1/produtos")]
 [Produces("application/json")]
 [ApiExplorerSettings(GroupName = "Produto")]
+[Authorize]
 public class ProdutoController : ControllerBase
 {
     private readonly IProdutoService _produtoService;
@@ -19,15 +20,32 @@ public class ProdutoController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
-    public async Task<ActionResult<ProdutoDTO>> Inserir([FromBody] ProdutoDTO produto)
+    public async Task<ActionResult<ProdutoRetornoDTO>> Inserir([FromBody] ProdutoDTO produto)
     {
         return await _produtoService.Inserir(produto);
     }
 
-    // [HttpGet]
-    // [Authorize]
-    // [Route("authenticated")]
-    // public string Authenticated() => String.Format("Authenticated - {0}", "asdas");
-    // public string Authenticated() => String.Format("Authenticated - {0}", User?.Identity?.Name);
+    [HttpPut]
+    public async Task<ActionResult<ProdutoRetornoDTO>> Atualizar([FromRoute] int idProduto, [FromBody] ProdutoDTO produto)
+    {
+        return await _produtoService.Atualizar(idProduto, produto);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<ProdutoRetornoDTO>> Obter([FromRoute] int idProduto)
+    {
+        return await _produtoService.Obter(idProduto);
+    }
+
+    [HttpDelete]
+    public async Task Excluir([FromRoute] int idProduto)
+    {
+        await _produtoService.Excluir(idProduto);
+    }
+
+    [HttpGet]
+    public async Task<IEnumerable<ProdutoRetornoDTO>> Listar()
+    {
+        return await _produtoService.Listar();
+    }
 }

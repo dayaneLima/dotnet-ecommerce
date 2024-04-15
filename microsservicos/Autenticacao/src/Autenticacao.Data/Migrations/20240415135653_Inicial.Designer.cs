@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Autenticacao.Data.Migrations
 {
     [DbContext(typeof(AutenticacaoContext))]
-    [Migration("20240412193650_Inicial")]
+    [Migration("20240415135653_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -28,7 +28,13 @@ namespace Autenticacao.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int(10) unsigned");
 
+                    b.Property<DateTime>("DataHorarioAtualizacao")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<DateTime>("DataHorarioCadastro")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataHorarioExclusao")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -40,9 +46,6 @@ namespace Autenticacao.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("Senha")
                         .IsRequired()

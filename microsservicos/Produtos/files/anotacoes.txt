@@ -1,0 +1,8 @@
+
+### Migrations
+Criação de migrations no dotnet:
+
+##### Deve estar na pasta Autenticacao/src/Autenticacao.Service
+dotnet ef migrations add Inicial --context ProdutoContext --project ../Produtos.Data/Produtos.Data.csproj
+dotnet ef database update --context ProdutoContext --project ../Produtos.Data/Produtos.Data.csproj
+

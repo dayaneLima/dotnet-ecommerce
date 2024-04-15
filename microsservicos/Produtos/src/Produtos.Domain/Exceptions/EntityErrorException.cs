@@ -1,6 +1,6 @@
 using Produtos.Domain.Errors;
 
-namespace Produto.Domain.Exceptions;
+namespace Produtos.Domain.Exceptions;
 
 public class EntityErrorException: Exception
 {

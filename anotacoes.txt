@@ -61,6 +61,8 @@ Criação de migrations no dotnet:
 dotnet ef migrations add Inicial --context AutenticacaoContext --project ../Autenticacao.Data/Autenticacao.Data.csproj
 dotnet ef database update --context AutenticacaoContext --project ../Autenticacao.Data/Autenticacao.Data.csproj
 
+migrationBuilder.InsertData(table: "Usuarios", columns: ["Nome", "Email", "Senha", "DataHorarioCadastro"], values: ["Teste", "teste@teste.com", BCrypt.Net.BCrypt.HashPassword("123456"), DateTime.Now]);
+
 ### Login
 Email: teste@teste.com
 Senha: teste

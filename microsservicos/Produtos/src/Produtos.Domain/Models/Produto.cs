@@ -12,6 +12,7 @@ public class Produto : Entity
     public required string Categoria { get; set; }
     public int QuantidadeDisponivel { get; set; }
     public required string UrlImagem { get; set; }
+    public required int IdUsuario { get; set; }
     
     public DateTime DataHorarioCadastro { get; set; }
     public DateTime DataHorarioAtualizacao { get; set; }

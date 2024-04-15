@@ -4,10 +4,10 @@ using Autenticacao.Domain.Models;
 
 namespace Autenticacao.Application.AutoMappers;
 
-public class LoginParaUsuario
+public class UsuarioParaUsuarioDTO
 {
-    public LoginParaUsuario(AutoMapperMappingProfile mapping) 
+    public UsuarioParaUsuarioDTO(AutoMapperMappingProfile mapping) 
     {
-        mapping.CreateMap<LoginDTO, Usuario>();
+        mapping.CreateMap<Usuario, UsuarioDTO>();
     }
 }

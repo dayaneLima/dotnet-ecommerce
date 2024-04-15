@@ -4,7 +4,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace Autenticacao.Data.Migrations
+namespace Produtos.Data.Migrations
 {
     /// <inheritdoc />
     public partial class Inicial : Migration
@@ -16,31 +16,34 @@ namespace Autenticacao.Data.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Usuarios",
+                name: "Produtos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int(10) unsigned", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
-                    Email = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
-                    Senha = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
-                    Role = table.Column<string>(type: "longtext", nullable: true),
-                    DataHorarioCadastro = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    Descricao = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
+                    Valor = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Categoria = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
+                    QuantidadeDisponivel = table.Column<int>(type: "int(10) unsigned", nullable: false),
+                    UrlImagem = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
+                    IdUsuario = table.Column<int>(type: "int(10) unsigned", nullable: false),
+                    DataHorarioCadastro = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    DataHorarioAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    DataHorarioExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Usuarios", x => x.Id);
+                    table.PrimaryKey("PK_Produtos", x => x.Id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
-
-                migrationBuilder.InsertData(table: "Usuarios", columns: ["Nome", "Email", "Senha", "DataHorarioCadastro"], values: ["Teste", "teste@teste.com", BCrypt.Net.BCrypt.HashPassword("123456"), DateTime.Now]);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Usuarios");
+                name: "Produtos");
         }
     }
 }

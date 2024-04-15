@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Produtos.Data.Context;
+using Produtos.Domain.Models.Core;
 using Produtos.Domain.Repository.Core;
 
 namespace Produtos.Data.Repository;
 
-public abstract class Repository<T> : IRepository<T> where T : class
+public abstract class Repository<T> : IRepository<T> where T : Entity
 {
     protected readonly ProdutoContext _context;
     public IUnitOfWork UnitOfWork => _context;
@@ -26,7 +27,9 @@ public abstract class Repository<T> : IRepository<T> where T : class
         if (entity is not null) _dbSet.Remove(entity);
     }
 
-    public virtual IEnumerable<T> ObterTodos() => _dbSet.ToList();
+    public virtual Task<T> ObterPorId(int id) => _dbSet.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
+
+    public virtual async Task<IEnumerable<T>> ObterTodos() => await _dbSet.ToListAsync();
 
     public void DetachLocal(Func<T, bool> predicate)
     {

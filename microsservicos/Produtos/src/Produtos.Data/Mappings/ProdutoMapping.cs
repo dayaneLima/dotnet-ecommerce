@@ -24,13 +24,34 @@ public class UsuarioMapping : IEntityTypeConfiguration<Produto>
                 .HasMaxLength(255)
                 .HasColumnType("varchar(255)");
 
-        // builder.Property(e => e.Valor)
-        //         .IsRequired()
-        //         .HasMaxLength(255)
-        //         .HasColumnType("varchar(255)");
+        builder.Property(e => e.Valor)
+                .IsRequired()
+                .HasColumnType("decimal(10,2)");
+
+        builder.Property(e => e.Categoria)
+                .IsRequired()
+                .HasMaxLength(255)
+                .HasColumnType("varchar(255)");
+
+        builder.Property(e => e.QuantidadeDisponivel)
+                .IsRequired()
+                .HasColumnType("int(10) unsigned");
+
+        builder.Property(e => e.UrlImagem)
+                .IsRequired()
+                .HasMaxLength(255)
+                .HasColumnType("varchar(255)");
+
+        builder.Property(e => e.IdUsuario)
+                .IsRequired()
+                .HasColumnType("int(10) unsigned");
 
         builder.Property(e => e.DataHorarioCadastro).IsRequired();
+        builder.Property(e => e.DataHorarioAtualizacao).IsRequired();
+        builder.Property(e => e.DataHorarioExclusao).IsRequired(false);
 
-        builder.ToTable("Usuarios");
+        builder.ToTable("Produtos");
+        
+        builder.HasQueryFilter(e => e.DataHorarioExclusao == null);
     }
 }   

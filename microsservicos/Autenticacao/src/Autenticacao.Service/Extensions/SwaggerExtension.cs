@@ -8,9 +8,7 @@ public static class SwaggerExtension
     public static void AddSwagger(this IServiceCollection services)
     {
         bool isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";          
-        var mensagemAutenticacao = isDevelopment ? 
-            "Token Dev" :
-            "Autenticação baseada em Json Web Token (JWT)";
+        var mensagemAutenticacao = "Autenticação baseada em Json Web Token (JWT)";
 
         services.AddSwaggerGen(c =>
         {

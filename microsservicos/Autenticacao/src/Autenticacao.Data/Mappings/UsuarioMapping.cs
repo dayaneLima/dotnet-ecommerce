@@ -30,7 +30,11 @@ public class UsuarioMapping : IEntityTypeConfiguration<Usuario>
                 .HasColumnType("varchar(255)");
 
         builder.Property(e => e.DataHorarioCadastro).IsRequired();
+        builder.Property(e => e.DataHorarioAtualizacao).IsRequired();
+        builder.Property(e => e.DataHorarioExclusao).IsRequired(false);
 
         builder.ToTable("Usuarios");
+
+        builder.HasQueryFilter(e => e.DataHorarioExclusao == null);
     }
 }   

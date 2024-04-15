@@ -16,11 +16,11 @@ public class UsuarioService : IUsuarioService
         _tokenService = tokenService;
     }
 
-    public async Task<AccessTokenDTO> AutenticarUsuario(LoginDTO login)
+    public async Task<AccessTokenDTO> AutenticarUsuario(LoginDTO loginDTO)
     {
-        var usuarioAutenticado = await _usuarioRepository.ObterPorEmail(login.Email!);
+        var usuarioAutenticado = await _usuarioRepository.ObterPorEmail(loginDTO.Email!);
 
-        if (usuarioAutenticado is null || !BCrypt.Net.BCrypt.Verify(login.Senha, usuarioAutenticado.Senha))
+        if (usuarioAutenticado is null || !BCrypt.Net.BCrypt.Verify(loginDTO.Senha, usuarioAutenticado.Senha))
             throw new AuthException("E-mail ou senha incorretos");
 
         return _tokenService.GerarAccesToken(usuarioAutenticado!);

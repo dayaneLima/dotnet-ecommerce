@@ -1,6 +1,6 @@
-using Produto.Service.Extensions;
-using Produto.Data.Context;
-using Produto.Application.AutoMappers;
+using Produtos.Service.Extensions;
+using Produtos.Data.Context;
+using Produtos.Application.AutoMappers;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,9 +13,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
-
 builder.Services.AddDIConfiguration(builder.Configuration);
-
 builder.Services.AddAutoMapper(typeof(AutoMapperMappingProfile));
 
 builder.Services.AddDbContext<ProdutoContext>(options => options
@@ -25,9 +23,8 @@ builder.Services.AddDbContext<ProdutoContext>(options => options
 );
 
 builder.Services.AddAutenticationJwt(builder.Configuration);
-
 builder.Services.AddCustomizacaoErros();
-
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

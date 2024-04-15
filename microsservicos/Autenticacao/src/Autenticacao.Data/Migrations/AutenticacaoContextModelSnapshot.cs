@@ -25,7 +25,13 @@ namespace Autenticacao.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int(10) unsigned");
 
+                    b.Property<DateTime>("DataHorarioAtualizacao")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<DateTime>("DataHorarioCadastro")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataHorarioExclusao")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -37,9 +43,6 @@ namespace Autenticacao.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("Senha")
                         .IsRequired()

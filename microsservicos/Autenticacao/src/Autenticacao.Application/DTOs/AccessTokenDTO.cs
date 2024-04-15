@@ -1,3 +1,3 @@
 namespace Autenticacao.Application.DTOs;
 
-public record AccessTokenDTO(string token);
+public record AccessTokenDTO(string Token, string TokenType);

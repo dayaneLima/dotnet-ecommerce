@@ -19,7 +19,5 @@ public class ProdutoValidation : AbstractValidator<Produto>
         RuleFor(e => e.Categoria).NotEmpty().WithMessage("Categoria é obrigatório");
         RuleFor(e => e.QuantidadeDisponivel).NotEmpty().WithMessage("Quantidade disponível é obrigatório");
         RuleFor(e => e.UrlImagem).NotEmpty().WithMessage("Imagem é obrigatório");
-        RuleFor(e => e.DataHorarioCadastro).NotEmpty().WithMessage("Data de cadastro é obrigatório");
-        RuleFor(e => e.DataHorarioAtualizacao).NotEmpty().WithMessage("Data de atualização é obrigatório");
     }
 }

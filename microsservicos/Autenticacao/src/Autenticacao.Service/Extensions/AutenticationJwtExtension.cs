@@ -1,4 +1,5 @@
 using System.Text;
+using Autenticacao.Services.Handlers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;

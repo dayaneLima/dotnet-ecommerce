@@ -12,10 +12,12 @@ namespace Autenticacao.Service.Controllers;
 public class AutenticacaoController : ControllerBase
 {
     private readonly IUsuarioService _usuarioService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public AutenticacaoController(IUsuarioService usuarioService)
+    public AutenticacaoController(IUsuarioService usuarioService, IHttpContextAccessor httpContextAccessor)
     {
         _usuarioService = usuarioService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     [HttpPost]
@@ -28,7 +30,9 @@ public class AutenticacaoController : ControllerBase
 
     // [HttpGet]
     // [Authorize]
-    // [Route("authenticated")]
-    // public string Authenticated() => String.Format("Authenticated - {0}", "asdas");
-    // public string Authenticated() => String.Format("Authenticated - {0}", User?.Identity?.Name);
+    // [Route("validar")]
+    // public System.Security.Claims.ClaimsPrincipal Validar()
+    // {
+    //     return _httpContextAccessor.HttpContext!.User;
+    // }
 }

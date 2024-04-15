@@ -10,7 +10,7 @@ public record ProdutoDTO
     [Required(ErrorMessage = "Descrição é obrigatória", AllowEmptyStrings = false)]    
     public required string Descricao {get; init;}
 
-    [Required(ErrorMessage = "Valor é obrigatória", AllowEmptyStrings = false)]    
+    [Required(ErrorMessage = "Valor é obrigatório", AllowEmptyStrings = false)]
     public decimal Valor { get; set; }
     
     [Required(ErrorMessage = "Categoria é obrigatória", AllowEmptyStrings = false)]    

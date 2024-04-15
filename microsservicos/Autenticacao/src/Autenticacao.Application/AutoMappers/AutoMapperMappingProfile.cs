@@ -6,6 +6,6 @@ public class AutoMapperMappingProfile : Profile
 {
     public AutoMapperMappingProfile()
     {
-        new LoginParaUsuario(this);
+        new UsuarioParaUsuarioDTO(this);
     }
 }
