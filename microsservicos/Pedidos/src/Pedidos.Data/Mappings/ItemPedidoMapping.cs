@@ -4,24 +4,25 @@ using Pedidos.Domain.Models;
 
 namespace Pedidos.Data.Mappings;
 
-public class PedidoMapping : IEntityTypeConfiguration<Pedido>
+public class ItemPedidoMapping : IEntityTypeConfiguration<ItemPedido>
 {
-    public void Configure(EntityTypeBuilder<Pedido> builder)
-    {              
+    public void Configure(EntityTypeBuilder<ItemPedido> builder)
+    {                     
         builder.Property(e => e.Id)
             .IsRequired()
             .HasColumnType("int(10) unsigned");
 
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.ValorTotal)
+        builder.Property(e => e.Quantidade)
+            .IsRequired()
+            .HasColumnType("int(10) unsigned");
+
+        builder.Property(e => e.PrecoVenda)
             .IsRequired()
             .HasColumnType("decimal(10,2)");
 
-        builder.Property(e => e.Status)
-            .IsRequired();
-
-        builder.Property(e => e.IdUsuario)
+        builder.Property(e => e.IdProduto)
             .IsRequired()
             .HasColumnType("int(10) unsigned");
 
@@ -29,11 +30,7 @@ public class PedidoMapping : IEntityTypeConfiguration<Pedido>
         builder.Property(e => e.DataHorarioAtualizacao).IsRequired();
         builder.Property(e => e.DataHorarioExclusao).IsRequired(false);
 
-        builder.HasMany(e => e.ItensPedido)
-            .WithOne(e => e.Pedido)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.ToTable("Pedidos");
+        builder.ToTable("ItensPedido");
         
         builder.HasQueryFilter(e => e.DataHorarioExclusao == null);
     }

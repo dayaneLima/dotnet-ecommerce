@@ -9,6 +9,7 @@ public class PedidoContext : DbContext, IUnitOfWork
     public PedidoContext(DbContextOptions<PedidoContext> options) : base(options) { }
 
     public DbSet<Pedido> Pedidos { get; set; }
+    public DbSet<ItemPedido> ItensPedido { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -14,8 +14,7 @@ public class ItemPedido : Entity
     public DateTime DataHorarioAtualizacao { get; set; }
     public DateTime? DataHorarioExclusao { get; set; }
 
-    //NAVEGACAO EFCORE
-    public Pedido Pedido { get; set; }
+    public required Pedido Pedido { get; set; } //Propriedade de navegação efcore
     
     public override EntityError Validar() => new EntityError(new ItemPedidoValidation().Validate(this));
 }
