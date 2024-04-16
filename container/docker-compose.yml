@@ -45,7 +45,7 @@ services:
       ports:
         - "5001:5001"
       volumes:
-        - ../microsservicos/Produtos:/app
+        - ../microsservicos/Pedidos:/app
       depends_on:
         - mysql-pedidos
       networks: 

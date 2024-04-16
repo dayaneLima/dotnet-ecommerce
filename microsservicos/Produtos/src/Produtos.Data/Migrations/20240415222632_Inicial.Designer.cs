@@ -11,7 +11,7 @@ using Produtos.Data.Context;
 namespace Produtos.Data.Migrations
 {
     [DbContext(typeof(ProdutoContext))]
-    [Migration("20240415174651_Inicial")]
+    [Migration("20240415222632_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -46,9 +46,6 @@ namespace Produtos.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
-
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int(10) unsigned");
 
                     b.Property<string>("Nome")
                         .IsRequired()

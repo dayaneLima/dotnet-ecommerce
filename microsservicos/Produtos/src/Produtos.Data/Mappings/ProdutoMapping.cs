@@ -4,7 +4,7 @@ using Produtos.Domain.Models;
 
 namespace Produtos.Data.Mappings;
 
-public class UsuarioMapping : IEntityTypeConfiguration<Produto>
+public class ProdutoMapping : IEntityTypeConfiguration<Produto>
 {
     public void Configure(EntityTypeBuilder<Produto> builder)
     {              

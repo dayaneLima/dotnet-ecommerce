@@ -44,9 +44,6 @@ namespace Produtos.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int(10) unsigned");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(255)

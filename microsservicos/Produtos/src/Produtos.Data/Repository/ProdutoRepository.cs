@@ -1,10 +1,16 @@
 using Produtos.Domain.Models;
 using Produtos.Domain.Repository;
 using Produtos.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Produtos.Data.Repository;
 
 public class ProdutoRepository : Repository<Produto>, IProdutoRepository
 {
     public ProdutoRepository(ProdutoContext context) : base(context) { }
+
+    public async Task<IEnumerable<Produto>> ListarPorIds(List<int> ids)
+    {
+        return await _dbSet.Where(e =>  ids.Contains(e.Id)).ToListAsync<Produto>();
+    }
 }

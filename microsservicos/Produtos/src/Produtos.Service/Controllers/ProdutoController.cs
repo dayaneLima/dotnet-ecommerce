@@ -47,8 +47,11 @@ public class ProdutoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ProdutoRetornoDTO>> Listar()
+    public async Task<IEnumerable<ProdutoRetornoDTO>> Listar([FromQuery(Name = "ids")] List<int> ids)
     {
+        if (ids.Count > 0)
+            return await _produtoService.ListarPorIds(ids);
+        
         return await _produtoService.Listar();
     }
 }

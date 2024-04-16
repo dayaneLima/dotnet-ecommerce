@@ -3,4 +3,7 @@ using Produtos.Domain.Repository.Core;
 
 namespace Produtos.Domain.Repository;
 
-public interface IProdutoRepository: IRepository<Produto> { }
+public interface IProdutoRepository: IRepository<Produto> 
+{
+    Task<IEnumerable<Produto>> ListarPorIds(List<int> ids); 
+}

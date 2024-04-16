@@ -27,7 +27,6 @@ namespace Produtos.Data.Migrations
                     Categoria = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
                     QuantidadeDisponivel = table.Column<int>(type: "int(10) unsigned", nullable: false),
                     UrlImagem = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
-                    IdUsuario = table.Column<int>(type: "int(10) unsigned", nullable: false),
                     DataHorarioCadastro = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     DataHorarioAtualizacao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     DataHorarioExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true)
