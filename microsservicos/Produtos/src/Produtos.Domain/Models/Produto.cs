@@ -8,7 +8,7 @@ public class Produto : Entity
 {
     public required string Nome { get; set; }
     public required string Descricao { get; set; }
-    public decimal Valor { get; set; }
+    public double Valor { get; set; }
     public required string Categoria { get; set; }
     public int QuantidadeDisponivel { get; set; }
     public required string UrlImagem { get; set; }

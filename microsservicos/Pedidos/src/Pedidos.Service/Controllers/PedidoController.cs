@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pedidos.Application.Interfaces;
 using Pedidos.Application.DTOs;
+using System.Security.Claims;
+using Pedidos.Domain.Exceptions;
 
 namespace Pedidos.Service.Controllers;
 
@@ -13,17 +15,24 @@ namespace Pedidos.Service.Controllers;
 public class PedidoController : ControllerBase
 {
     private readonly IPedidoService _pedidoService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public PedidoController(IPedidoService pedidoService)
+    public PedidoController(IPedidoService pedidoService, IHttpContextAccessor httpContextAccessor)
     {
         _pedidoService = pedidoService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    // [HttpPost]
-    // public async Task Inserir([FromBody] PedidoDTO pedido)
-    // {
-    //     // return await _pedidoService.Inserir(pedido);
-    // }
+    [HttpPost]
+    public void Inserir([FromBody] PedidoDTO pedido)
+    {
+        string idUsuarioToken = _httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+
+        if (!int.TryParse(idUsuarioToken, out int idUsuario))
+            throw new NotFoundException("Usuário não identidicado");
+
+        _pedidoService.InserirNaFila(idUsuario, pedido);
+    }
 
     // [HttpPut]
     // [Route("{idPedido}")]

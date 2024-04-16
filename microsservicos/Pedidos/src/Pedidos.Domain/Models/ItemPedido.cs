@@ -10,11 +10,11 @@ public class ItemPedido : Entity
     public double PrecoVenda { get; set; }
     public int IdProduto { get; set; }
     
-    public DateTime DataHorarioCadastro { get; set; }
-    public DateTime DataHorarioAtualizacao { get; set; }
+    public DateTime? DataHorarioCadastro { get; set; }
+    public DateTime? DataHorarioAtualizacao { get; set; }
     public DateTime? DataHorarioExclusao { get; set; }
 
-    public required Pedido Pedido { get; set; } //Propriedade de navegação efcore
+    public Pedido? Pedido { get; set; } //Propriedade de navegação efcore
     
     public override EntityError Validar() => new EntityError(new ItemPedidoValidation().Validate(this));
 }

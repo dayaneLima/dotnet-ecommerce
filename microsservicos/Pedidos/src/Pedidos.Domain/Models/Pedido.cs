@@ -11,11 +11,11 @@ public class Pedido : Entity
     public StatusPedido Status { get; set; }
     public int IdUsuario { get; set; }
     
-    public DateTime DataHorarioCadastro { get; set; }
-    public DateTime DataHorarioAtualizacao { get; set; }
+    public DateTime? DataHorarioCadastro { get; set; }
+    public DateTime? DataHorarioAtualizacao { get; set; }
     public DateTime? DataHorarioExclusao { get; set; }
 
-    public required IEnumerable<ItemPedido> ItensPedido { get; set; } //Propriedade de navegação efcore
+    public IEnumerable<ItemPedido>? ItensPedido { get; set; } //Propriedade de navegação efcore
     
     public override EntityError Validar() => new EntityError(new PedidoValidation().Validate(this));
 }

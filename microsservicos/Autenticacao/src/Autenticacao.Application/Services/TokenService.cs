@@ -60,7 +60,7 @@ public class TokenService : ITokenService
     {
         ClaimsIdentity claimsIdentity = new ClaimsIdentity(new Claim[]
         {
-            new Claim(ClaimTypes.Sid, usuario.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
             new Claim(ClaimTypes.Name, usuario.Nome!.ToString()),
         });
 

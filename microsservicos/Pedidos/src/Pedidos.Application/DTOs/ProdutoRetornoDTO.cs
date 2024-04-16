@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Produtos.Application.DTOs;
+namespace Pedidos.Application.DTOs;
 
 public record ProdutoRetornoDTO
 {

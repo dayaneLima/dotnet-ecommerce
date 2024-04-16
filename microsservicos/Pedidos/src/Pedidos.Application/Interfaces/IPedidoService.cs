@@ -4,7 +4,8 @@ namespace Pedidos.Application.Interfaces;
 
 public interface IPedidoService
 {
-    // Task<PedidoRetornoDTO> Inserir(PedidoDTO PedidoDTO);
+    void InserirNaFila(int idUsuario, PedidoDTO pedidoDTO);
+    Task Inserir(PedidoFilaDTO pedidoFilaDTO);
     // Task<PedidoRetornoDTO> Atualizar(int id, PedidoDTO PedidoDTO);
     // Task<PedidoRetornoDTO> Obter(int id);
     // Task Excluir(int id);

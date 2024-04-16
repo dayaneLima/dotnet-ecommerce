@@ -47,10 +47,13 @@ public class ProdutoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ProdutoRetornoDTO>> Listar([FromQuery(Name = "ids")] List<int> ids)
+    [AllowAnonymous]
+    public async Task<IEnumerable<ProdutoRetornoDTO>> Listar([FromQuery] string? ids)
     {
-        if (ids.Count > 0)
-            return await _produtoService.ListarPorIds(ids);
+        var idsTratados = ids?.Split(',').Select(str => Convert.ToInt32(str)).ToList();
+
+        if (idsTratados?.Count > 0)
+            return await _produtoService.ListarPorIds(idsTratados);
         
         return await _produtoService.Listar();
     }

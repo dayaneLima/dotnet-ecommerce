@@ -6,6 +6,8 @@ public class AutoMapperMappingProfile : Profile
 {
     public AutoMapperMappingProfile()
     {
-        // new PedidoDTOParaPedido(this);
+        new PedidoDTOParaPedidoFilaDTO(this);
+        new PedidoFilaDTOParaPedido(this);
+        new ItemPedidoDTOParaItemPedido(this);
     }
 }

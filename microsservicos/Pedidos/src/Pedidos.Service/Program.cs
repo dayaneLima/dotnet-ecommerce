@@ -2,6 +2,7 @@ using Pedidos.Service.Extensions;
 using Pedidos.Data.Context;
 using Pedidos.Application.AutoMappers;
 using Microsoft.EntityFrameworkCore;
+using Pedidos.Application.MessageBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 builder.Services.AddDIConfiguration(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(AutoMapperMappingProfile));
+builder.Services.AddHostedService<RabbitMQPedidoConsumer>();
+builder.Services.AddIntegration(builder.Configuration);
 
 builder.Services.AddDbContext<PedidoContext>(options => options
     .UseMySQL(builder.Configuration.GetConnectionString("MysqlConnectionString") ?? "",

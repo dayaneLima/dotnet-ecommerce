@@ -11,7 +11,7 @@ public record ProdutoDTO
     public required string Descricao {get; init;}
 
     [Required(ErrorMessage = "Valor é obrigatório", AllowEmptyStrings = false)]
-    public decimal Valor { get; set; }
+    public double Valor { get; set; }
     
     [Required(ErrorMessage = "Categoria é obrigatória", AllowEmptyStrings = false)]    
     public required string Categoria { get; set; }

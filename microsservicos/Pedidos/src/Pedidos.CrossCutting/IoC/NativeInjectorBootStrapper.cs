@@ -5,6 +5,7 @@ using Pedidos.Data.Context;
 using Pedidos.Application.Interfaces;
 using Pedidos.Application.Services;
 using Microsoft.Extensions.Configuration;
+using Pedidos.Application.MessageBus;
 
 namespace Pedidos.CrossCutting.IoC;
 
@@ -14,6 +15,7 @@ public class NativeInjectorBootStrapper
     {        
         services.AddScoped<IPedidoRepository, PedidoRepository>();         
         services.AddScoped<IPedidoService, PedidoService>();
+        services.AddScoped<IMessageProducer, RabbitMQProducer>();
         services.AddScoped<PedidoContext>();
 
         services.AddSingleton(configuration);

@@ -46,6 +46,9 @@ public class ExceptionMiddleware
         if (exception is NotFoundException) 
             statusCode = (int) HttpStatusCode.NotFound;
 
+        if (exception is BadRequestException) 
+            statusCode = (int) HttpStatusCode.BadRequest;
+
         errorDTO.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = statusCode;
