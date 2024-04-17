@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Builder;
 using Pedidos.Service.Middlewares;
 
 namespace Pedidos.Service.Extensions;

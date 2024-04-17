@@ -1,22 +1,23 @@
 using System.Text;
 using System.Text.Json;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Pedidos.Application.DTOs;
 using Pedidos.Application.Interfaces;
 using Pedidos.Domain.Exceptions;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 
 namespace Pedidos.Application.MessageBus;
 
 public class RabbitMQPedidoConsumer : BackgroundService
 {
-    public readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly string fila;
-    private readonly IConnection _connection;
+    private readonly string queueName;
     private readonly IModel _channel;
+    private readonly IConnection _connection;
+    public readonly IServiceScopeFactory _serviceScopeFactory;
 
     public RabbitMQPedidoConsumer(IServiceScopeFactory serviceScopeFactory)
     {
@@ -24,21 +25,13 @@ public class RabbitMQPedidoConsumer : BackgroundService
 
         using (var scope = _serviceScopeFactory.CreateScope())
         {
-            var configuration = scope.ServiceProvider.GetService<IConfiguration>()!;
+            var configuration = scope.ServiceProvider.GetService<IConfiguration>()!;            
+            queueName = configuration["RabbitMQ:Queues:Pedido"]!;
 
-            fila = configuration["RabbitMQ:Queues:Pedido"]!;
-
-            var factory = new ConnectionFactory
-            {
-                HostName = configuration["RabbitMQ:Host"],
-                Port = AmqpTcpEndpoint.UseDefaultPort,
-                UserName = configuration["RabbitMQ:User"],
-                Password = configuration["RabbitMQ:Password"]
-            };
-            _connection = factory.CreateConnection();
-
+            _connection = CreateConnection(configuration);
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: fila, false, false, false, arguments: null);
+            
+            _channel.QueueDeclare(queue: queueName, false, false, false, arguments: null);
         }
     }
 
@@ -48,19 +41,45 @@ public class RabbitMQPedidoConsumer : BackgroundService
         var consumer = new EventingBasicConsumer(_channel);
        
         consumer.Received += async (chanel, evt) => {
-            var message = Encoding.UTF8.GetString(evt.Body.ToArray());
-            var pedidoFilaDTO = JsonSerializer.Deserialize<PedidoFilaDTO>(message);
-
-            if (pedidoFilaDTO is null)
-                throw new NotFoundException("Pedido para processar não encontrado");
-
+            var pedidoFilaDTO = ObterPedidoFilaDTO(evt.Body);
             await ProcessarPedido(pedidoFilaDTO);
             _channel.BasicAck(evt.DeliveryTag, false);//retira da lista
         };
 
-        _channel.BasicConsume(fila, false, consumer: consumer); 
+        _channel.BasicConsume(queueName, false, consumer: consumer); 
 
         return Task.CompletedTask;
+    }
+
+    private IConnection CreateConnection(IConfiguration configuration)
+    {
+        try
+        {
+            var factory = new ConnectionFactory
+            {
+                HostName = configuration["RabbitMQ:Host"],
+                Port = AmqpTcpEndpoint.UseDefaultPort,
+                UserName = configuration["RabbitMQ:User"],
+                Password = configuration["RabbitMQ:Password"]
+            };
+
+            return factory.CreateConnection();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private PedidoFilaDTO ObterPedidoFilaDTO(ReadOnlyMemory<byte> body)
+    {
+        var message = Encoding.UTF8.GetString(body.ToArray());
+        var pedidoFilaDTO = JsonSerializer.Deserialize<PedidoFilaDTO>(message);
+
+        if (pedidoFilaDTO is null)
+            throw new NotFoundException("Pedido para processar não encontrado");
+
+        return pedidoFilaDTO;
     }
 
     private async Task ProcessarPedido(PedidoFilaDTO pedidoFilaDTO)

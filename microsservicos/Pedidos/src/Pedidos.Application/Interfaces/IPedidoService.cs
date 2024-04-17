@@ -4,10 +4,10 @@ namespace Pedidos.Application.Interfaces;
 
 public interface IPedidoService
 {
-    void InserirNaFila(int idUsuario, PedidoDTO pedidoDTO);
+    void PublicarNaFila(int idUsuario, PedidoDTO pedidoDTO);
     Task Inserir(PedidoFilaDTO pedidoFilaDTO);
-    // Task<PedidoRetornoDTO> Atualizar(int id, PedidoDTO PedidoDTO);
-    // Task<PedidoRetornoDTO> Obter(int id);
-    // Task Excluir(int id);
-    // Task<IEnumerable<PedidoRetornoDTO>> Listar();
+    Task<PedidoRetornoDTO> Obter(int idUsuario, int id);
+    Task<PedidoDetalhadoRetornoDTO> ObterComItensPedido(int idUsuario, int id);
+    Task<IEnumerable<PedidoRetornoDTO>> Listar(int idUsuario);
+    Task<IEnumerable<PedidoDetalhadoRetornoDTO>> ListarComItensPedido(int idUsuario);
 }

@@ -1,7 +1,8 @@
+using AutoMapper;
+
 using Pedidos.Application.Interfaces;
 using Pedidos.Domain.Repository;
 using Pedidos.Application.DTOs;
-using AutoMapper;
 using Pedidos.Domain.Models;
 using Pedidos.Domain.Exceptions;
 using Pedidos.Application.MessageBus;
@@ -12,28 +13,20 @@ namespace Pedidos.Application.Services;
 
 public class PedidoService : IPedidoService
 {
-    private readonly IPedidoRepository _pedidoRepository;
-    private readonly IMessageProducer _messageProducer;
     private readonly IMapper _mapper;
+    private readonly IMessageProducer _messageProducer;
+    private readonly IPedidoRepository _pedidoRepository;
     private readonly IProdutoIntegrationService _produtoIntegrationService;
-   public static HttpClientHandler HttpClientHandlerIgnoreCertificate()
+
+    public PedidoService(IMessageProducer messageProducer, IMapper mapper, IPedidoRepository PedidoRepository, IProdutoIntegrationService produtoIntegrationService)
     {
-        var clientHandler = new HttpClientHandler();
-        clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-        return clientHandler;
-    }
-    public PedidoService(IMessageProducer messageProducer, IMapper mapper, IPedidoRepository PedidoRepository)
-    {
-        _messageProducer = messageProducer;
         _mapper = mapper;
+        _messageProducer = messageProducer;
         _pedidoRepository = PedidoRepository;
-        _produtoIntegrationService =  Refit.RestService.For<IProdutoIntegrationService>(new HttpClient(HttpClientHandlerIgnoreCertificate())
-        {
-            BaseAddress = new Uri("https://produtos-api:5002")
-        });;;
+        _produtoIntegrationService = produtoIntegrationService;
     }
 
-    public void InserirNaFila(int idUsuario, PedidoDTO pedidoDTO)
+    public void PublicarNaFila(int idUsuario, PedidoDTO pedidoDTO)
     {
         var pedidoFilaDTO = _mapper.Map<PedidoFilaDTO>(pedidoDTO);        
         _messageProducer.SendMessage(pedidoFilaDTO with {IdUsuario = idUsuario});
@@ -42,13 +35,12 @@ public class PedidoService : IPedidoService
     public async Task Inserir(PedidoFilaDTO pedidoFilaDTO)
     {
         var pedido = _mapper.Map<Pedido>(pedidoFilaDTO);
-        var idsProdutos = pedido.ItensPedido?.Select(e => e.IdProduto).ToList();
+        var produtosDTO = await ObterProdutosDTO(pedido);
 
-        var produtosRetornoDTO = await _produtoIntegrationService.Listar(string.Join(',', idsProdutos!));
+        ValidarAtribuirPrecoVendaItensPedido(pedido, produtosDTO);
 
-        ValidarAtribuirPrecoVendaItensPedido(pedido, produtosRetornoDTO);
         pedido.Status = StatusPedido.EM_PROCESSAMENTO;
-        pedido.ValorTotal =  pedido.ItensPedido!.Sum(i => i.PrecoVenda);
+        pedido.ValorTotal =  CalcularValorTotalPedido(pedido);
         
         var validacao = pedido.Validar();
         if (!validacao.IsValid) throw new EntityErrorException($"Dados do pedido inválido(s)", validacao);
@@ -57,11 +49,54 @@ public class PedidoService : IPedidoService
         await _pedidoRepository.UnitOfWork.Commit();
     }
 
-    private void ValidarAtribuirPrecoVendaItensPedido(Pedido pedido, IEnumerable<ProdutoRetornoDTO> produtosRetornoDTO)
+    public async Task<PedidoRetornoDTO> Obter(int idUsuario, int id)
+    {
+        var pedido = await _pedidoRepository.ObterPedidoUsuario(idUsuario, id);
+
+        if (pedido is null)
+            throw new NotFoundException("Pedido não encontrado!");
+
+        return _mapper.Map<PedidoRetornoDTO>(pedido);
+    }
+
+    public async Task<IEnumerable<PedidoRetornoDTO>> Listar(int idUsuario)
+    {
+        var pedidos = await _pedidoRepository.ObterTodosPedidosUsuario(idUsuario);
+        return _mapper.Map<IEnumerable<PedidoRetornoDTO>>(pedidos);
+    }
+
+    public async Task<PedidoDetalhadoRetornoDTO> ObterComItensPedido(int idUsuario, int id)
+    {
+        var pedido = await _pedidoRepository.ObterPedidoUsuarioComItensPedido(idUsuario, id);
+
+        if (pedido is null)
+            throw new NotFoundException("Pedido não encontrado!");
+
+        return await ObterPedidoDetalhado(pedido);
+    }
+
+    public async Task<IEnumerable<PedidoDetalhadoRetornoDTO>> ListarComItensPedido(int idUsuario)
+    {
+        var pedidosDetalhados = new List<PedidoDetalhadoRetornoDTO>();
+        var pedidos = await _pedidoRepository.ObterTodosPedidosUsuarioComItensPedido(idUsuario);
+
+        foreach (var pedido in pedidos)
+            pedidosDetalhados.Add(await ObterPedidoDetalhado(pedido));            
+
+        return pedidosDetalhados;
+    }
+
+    private async Task<IEnumerable<ProdutoDTO>> ObterProdutosDTO(Pedido pedido)
+    {
+        var idsProdutos = pedido.ItensPedido?.Select(e => e.IdProduto).ToList();
+        return await _produtoIntegrationService.Listar(string.Join(',', idsProdutos!));
+    }
+
+    private void ValidarAtribuirPrecoVendaItensPedido(Pedido pedido, IEnumerable<ProdutoDTO> produtosDTO)
     {
         foreach (var itemPedido in pedido.ItensPedido!)
         {
-            var produtoRelacionado = produtosRetornoDTO.Where(p => p.Id == itemPedido.IdProduto).FirstOrDefault();
+            var produtoRelacionado = produtosDTO.Where(p => p.Id == itemPedido.IdProduto).FirstOrDefault();
 
             if (produtoRelacionado is null) 
                 throw new NotFoundException($"Produto de id {itemPedido.Id} pedido não encontrado");
@@ -73,48 +108,29 @@ public class PedidoService : IPedidoService
         }
     }
 
-    // public async Task<PedidoRetornoDTO> Atualizar(int id, PedidoDTO PedidoDTO)
-    // {
-    //     var PedidoBanco = await Obter(id);
+    private double CalcularValorTotalPedido(Pedido pedido) => pedido.ItensPedido!.Sum(i => i.PrecoVenda * i.Quantidade);
 
-    //     if (PedidoBanco is null)
-    //         throw new NotFoundException("Pedido não encontrado!");
+    private async Task<PedidoDetalhadoRetornoDTO> ObterPedidoDetalhado(Pedido pedido) 
+    {
+        var itensPedido = new List<ItemPedidoRetornoDTO>();
+        var produtosDTO = await ObterProdutosDTO(pedido);
 
-    //     var Pedido = _mapper.Map<Pedido>(PedidoDTO);
-    //     Pedido.Id = id;
+        foreach (var itemPedido in pedido.ItensPedido!)
+        {
+            var produtoRelacionado = produtosDTO.Where(p => p.Id == itemPedido.IdProduto).FirstOrDefault();
 
-    //     var validacao = Pedido.Validar();
-    //     if (!validacao.IsValid) throw new EntityErrorException($"Dados do Pedido {PedidoDTO.Nome} inválido(s)", validacao);
+            if (produtoRelacionado is null) 
+                throw new NotFoundException($"Produto de id {itemPedido.Id} pedido não encontrado");
 
-    //     _PedidoRepository.Atualizar(Pedido);
-    //     await _PedidoRepository.UnitOfWork.Commit();
+            itensPedido.Add(
+                new ItemPedidoRetornoDTO(
+                    itemPedido.Quantidade, produtoRelacionado.Nome, produtoRelacionado.Descricao, 
+                    itemPedido.PrecoVenda,produtoRelacionado.Categoria,produtoRelacionado.UrlImagem
+                )
+            );
+        }
 
-    //     return _mapper.Map<PedidoRetornoDTO>(Pedido);
-    // }
-
-    // public async Task<PedidoRetornoDTO> Obter(int id)
-    // {
-    //     var Pedido = await _PedidoRepository.ObterPorId(id);
-
-    //     if (Pedido is null)
-    //         throw new NotFoundException("Pedido não encontrado!");
-
-    //     return _mapper.Map<PedidoRetornoDTO>(Pedido);
-    // }
-
-    // public async Task Excluir(int id)
-    // {
-    //     _PedidoRepository.Excluir(id);
-    //     var PedidoExcluido = await _PedidoRepository.UnitOfWork.Commit();
-
-    //     if (!PedidoExcluido)
-    //         throw new NotFoundException("Pedido não encontrado!");
-    // }
-
-    // public async Task<IEnumerable<PedidoRetornoDTO>> Listar()
-    // {
-    //     var Pedidos = await _PedidoRepository.ObterTodos();
-    //     return _mapper.Map<IEnumerable<PedidoRetornoDTO>>(Pedidos);
-    // }
+        return new PedidoDetalhadoRetornoDTO(pedido.Id, pedido.ValorTotal, pedido.Status.ToString(), pedido.DataHorarioCadastro, itensPedido);
+    }
 }
   

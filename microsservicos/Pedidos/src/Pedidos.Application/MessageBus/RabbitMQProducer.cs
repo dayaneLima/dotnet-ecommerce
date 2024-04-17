@@ -1,8 +1,7 @@
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
-using Pedidos.Application.DTOs;
 using RabbitMQ.Client;
+using Microsoft.Extensions.Configuration;
 
 namespace Pedidos.Application.MessageBus;
 
@@ -10,15 +9,14 @@ public class RabbitMQProducer(IConfiguration configuration) : IMessageProducer
 {
     private readonly IConfiguration _configuration = configuration;
 
-    public void SendMessage(PedidoFilaDTO message)
+    public void SendMessage<T>(T message)
     {
-        var connection =  CreateConnection();
+        var connection = CreateConnection();
+        using var channel = connection.CreateModel();
 
-        using  var channel = connection.CreateModel();
         channel.QueueDeclare(_configuration["RabbitMQ:Queues:Pedido"], false, false, false, arguments: null);
-
+        
         var body = SerializeMessage(message);
-
         channel.BasicPublish(exchange: "", routingKey: _configuration["RabbitMQ:Queues:Pedido"], body: body);
     }
 
@@ -42,9 +40,9 @@ public class RabbitMQProducer(IConfiguration configuration) : IMessageProducer
         }
     }
 
-    private byte[] SerializeMessage(PedidoFilaDTO message)
+    private byte[] SerializeMessage<T>(T message)
     { 
-        var json = JsonSerializer.Serialize<PedidoFilaDTO>(message);
+        var json = JsonSerializer.Serialize(message);
         return Encoding.UTF8.GetBytes(json);
     }
 }

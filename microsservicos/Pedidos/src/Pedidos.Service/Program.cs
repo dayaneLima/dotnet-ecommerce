@@ -17,7 +17,6 @@ builder.Services.AddSwagger();
 builder.Services.AddDIConfiguration(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(AutoMapperMappingProfile));
 builder.Services.AddHostedService<RabbitMQPedidoConsumer>();
-builder.Services.AddIntegration(builder.Configuration);
 
 builder.Services.AddDbContext<PedidoContext>(options => options
     .UseMySQL(builder.Configuration.GetConnectionString("MysqlConnectionString") ?? "",

@@ -20,6 +20,6 @@ public class EntityError
 
     public void AddError(string description, string propertyName)
     {
-        Descriptions.Add(new ErrorModel {PropertyName = propertyName, Description = description});
+        Descriptions.Add(new ErrorModel(propertyName, description));
     }
 }
