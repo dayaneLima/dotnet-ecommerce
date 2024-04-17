@@ -132,16 +132,16 @@ services:
       networks:
         - local
 
-    # redisinsight-ecommerce:
-    #   container_name: redisinsight-ecommerce
-    #   image: redislabs/redisinsight:1.14.0
-    #   restart: always
-    #   ports:
-    #     - "8010:8001"
-    #   volumes:
-    #     - ../data/redisinsight:/db 
-    #   networks:
-    #     - local
+    redisinsight-ecommerce:
+      container_name: redisinsight-ecommerce
+      image: redislabs/redisinsight:1.14.0
+      restart: always
+      ports:
+        - "8010:8001"
+      volumes:
+        - ../data/redisinsight:/db 
+      networks:
+        - local
         
 networks: 
   local:
