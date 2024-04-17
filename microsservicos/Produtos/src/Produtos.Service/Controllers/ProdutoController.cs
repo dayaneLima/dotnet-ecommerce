@@ -42,7 +42,6 @@ public class ProdutoController(IProdutoService produtoService) : ControllerBase
     }
 
     [HttpGet]
-    [AllowAnonymous]
     public async Task<IEnumerable<ProdutoRetornoDTO>> Listar([FromQuery] string? ids)
     {
         var idsTratados = ids?.Split(',').Select(str => Convert.ToInt32(str)).ToList();
