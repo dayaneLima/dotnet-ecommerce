@@ -1,10 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+
 using Autenticacao.Domain.Repository;
 using Autenticacao.Data.Repository;
 using Autenticacao.Data.Context;
 using Autenticacao.Application.Interfaces;
 using Autenticacao.Application.Services;
-using Microsoft.Extensions.Configuration;
 
 namespace Autenticacao.CrossCutting.IoC;
 

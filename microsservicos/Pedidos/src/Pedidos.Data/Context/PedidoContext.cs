@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 using Pedidos.Domain.Repository.Core;
 using Pedidos.Domain.Models;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Pedidos.Data.Context;
 

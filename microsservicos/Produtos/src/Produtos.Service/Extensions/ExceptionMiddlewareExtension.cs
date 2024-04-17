@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Builder;
 using Produtos.Service.Middlewares;
 
 namespace Produtos.Service.Extensions;

@@ -5,14 +5,9 @@ using Produtos.Domain.Exceptions;
 
 namespace Produtos.Service.Middlewares;
 
-public class ExceptionMiddleware
+public class ExceptionMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public ExceptionMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    private readonly RequestDelegate _next = next;
 
     public async Task Invoke(HttpContext context)
     {
@@ -29,27 +24,27 @@ public class ExceptionMiddleware
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var statusCode = (int) HttpStatusCode.InternalServerError;
-        var errorDTO = new ErrorDTO() { Message = exception.Message };
+        var errorDTO = new ErrorDTO { Message = exception.Message };
 
-        if (exception is EntityErrorException) 
+        statusCode = exception switch
         {
-            statusCode = (int) HttpStatusCode.BadRequest;
-            errorDTO.Descriptions = ((EntityErrorException) exception).EntityError!.Descriptions;
-        }
+            EntityErrorException entityError => HandleEntityError(entityError, errorDTO),
+            HttpErrorException httpError => httpError.StatusCode,
+            AuthException => (int) HttpStatusCode.Unauthorized,
+            NotFoundException => (int) HttpStatusCode.NotFound,
+            BadRequestException => (int) HttpStatusCode.BadRequest,
+            _ => statusCode
+        };
 
-        if (exception is HttpErrorException) 
-            statusCode = ((HttpErrorException) exception).StatusCode;
-
-        if (exception is AuthException) 
-            statusCode = (int) HttpStatusCode.Unauthorized;
-
-        if (exception is NotFoundException) 
-            statusCode = (int) HttpStatusCode.NotFound;
-
-        errorDTO.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = statusCode;
 
         return context.Response.WriteAsync(errorDTO.ToString());
+    }
+
+    private static int HandleEntityError(EntityErrorException entityError, ErrorDTO errorDTO)
+    {
+        errorDTO.Descriptions = entityError.EntityError!.Descriptions;
+        return (int) HttpStatusCode.BadRequest;
     }
 }

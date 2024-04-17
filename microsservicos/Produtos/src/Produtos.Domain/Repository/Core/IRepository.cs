@@ -9,7 +9,7 @@ public interface IRepository<T> : IDisposable where T : Entity
     T Inserir(T entity);
     T Atualizar(T entity);
     void Excluir(int id);
-    Task<T> ObterPorId(int id);
+    Task<T?> ObterPorId(int id);
     Task<IEnumerable<T>> ObterTodos();
     void DetachLocal(Func<T, bool> predicate);
 }

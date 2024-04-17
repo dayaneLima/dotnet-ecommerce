@@ -5,16 +5,10 @@ using Autenticacao.Application.DTOs;
 
 namespace Autenticacao.Application.Services;
 
-public class UsuarioService : IUsuarioService
+public class UsuarioService(IUsuarioRepository usuarioRepository, ITokenService tokenService) : IUsuarioService
 {
-    private readonly ITokenService _tokenService;
-    private readonly IUsuarioRepository _usuarioRepository;
-
-    public UsuarioService(IUsuarioRepository usuarioRepository, ITokenService tokenService)
-    {
-        _usuarioRepository = usuarioRepository;
-        _tokenService = tokenService;
-    }
+    private readonly ITokenService _tokenService = tokenService;
+    private readonly IUsuarioRepository _usuarioRepository = usuarioRepository;
 
     public async Task<AccessTokenDTO> AutenticarUsuario(LoginDTO loginDTO)
     {

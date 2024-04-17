@@ -1,26 +1,22 @@
+using AutoMapper;
+
 using Produtos.Application.Interfaces;
 using Produtos.Domain.Repository;
 using Produtos.Application.DTOs;
-using AutoMapper;
 using Produtos.Domain.Models;
 using Produtos.Domain.Exceptions;
 
 namespace Produtos.Application.Services;
 
-public class ProdutoService : IProdutoService
+public class ProdutoService(IProdutoRepository produtoRepository, IMapper mapper) : IProdutoService
 {
-    private readonly IProdutoRepository _produtoRepository;
-    private readonly IMapper _mapper;
-
-    public ProdutoService(IProdutoRepository produtoRepository, IMapper mapper)
-    {
-        _produtoRepository = produtoRepository;
-        _mapper = mapper;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IProdutoRepository _produtoRepository = produtoRepository;
 
     public async Task<ProdutoRetornoDTO> Inserir(ProdutoDTO produtoDTO)
     {
         var produto = _mapper.Map<Produto>(produtoDTO);
+        
         var validacao = produto.Validar();
         if (!validacao.IsValid) throw new EntityErrorException($"Dados do produto {produtoDTO.Nome} inválido(s)", validacao);
 

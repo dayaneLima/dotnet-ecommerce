@@ -27,14 +27,14 @@ public abstract class Repository<T> : IRepository<T> where T : Entity
         if (entity is not null) _dbSet.Remove(entity);
     }
 
-    public virtual Task<T> ObterPorId(int id) => _dbSet.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
+    public virtual Task<T?> ObterPorId(int id) => _dbSet.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
 
     public virtual async Task<IEnumerable<T>> ObterTodos() => await _dbSet.ToListAsync();
 
     public void DetachLocal(Func<T, bool> predicate)
     {
         var local = _context.Set<T>().Local.Where(predicate).FirstOrDefault();
-        if (local != null) _context.Entry(local).State = EntityState.Detached;
+        if (local is not null) _context.Entry(local).State = EntityState.Detached;
     }
 
     public void Dispose() => _context.Dispose();

@@ -10,14 +10,9 @@ namespace Produtos.Service.Controllers;
 [Produces("application/json")]
 [ApiExplorerSettings(GroupName = "Produto")]
 [Authorize]
-public class ProdutoController : ControllerBase
+public class ProdutoController(IProdutoService produtoService) : ControllerBase
 {
-    private readonly IProdutoService _produtoService;
-
-    public ProdutoController(IProdutoService produtoService)
-    {
-        _produtoService = produtoService;
-    }
+    private readonly IProdutoService _produtoService = produtoService;
 
     [HttpPost]
     public async Task<ActionResult<ProdutoRetornoDTO>> Inserir([FromBody] ProdutoDTO produto)

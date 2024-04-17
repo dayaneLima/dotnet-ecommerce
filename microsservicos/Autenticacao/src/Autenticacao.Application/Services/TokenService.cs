@@ -1,30 +1,23 @@
+using AutoMapper;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Caching.Distributed;
+
 using Autenticacao.Application.DTOs;
 using Autenticacao.Application.Interfaces;
 using Autenticacao.Domain.Models;
 
-using System.Security.Claims;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
-using AutoMapper;
-
 namespace Autenticacao.Application.Services;
 
-public class TokenService : ITokenService
+public class TokenService(IConfiguration configuration, IMapper mapper, IDistributedCache distributedCache) : ITokenService
 {
-    private readonly IConfiguration _configuration;
-    private readonly IMapper _mapper;
-    private readonly IDistributedCache _distributedCache;
-
-    public TokenService(IConfiguration configuration, IMapper mapper, IDistributedCache distributedCache)
-    {
-        _configuration = configuration;
-        _mapper = mapper;
-        _distributedCache = distributedCache;
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly IConfiguration _configuration = configuration;
+    private readonly IDistributedCache _distributedCache = distributedCache;
 
     public AccessTokenDTO GerarAccesToken(Usuario usuario)
     {
@@ -41,7 +34,7 @@ public class TokenService : ITokenService
             AbsoluteExpiration = DateTimeOffset.Now.AddHours(int.Parse(_configuration["JWT:HoursToExpireToken"]!))
         });
 
-        return new AccessTokenDTO(token, "Bearer");
+        return new AccessTokenDTO(token, "Bearer", usuarioDTO);
     }
 
     private SecurityTokenDescriptor DescribeTokenSpecification(Usuario usuario, byte[] key)

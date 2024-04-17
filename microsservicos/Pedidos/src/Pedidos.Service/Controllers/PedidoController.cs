@@ -13,16 +13,10 @@ namespace Pedidos.Service.Controllers;
 [Route("v1/pedidos")]
 [Produces("application/json")]
 [ApiExplorerSettings(GroupName = "Pedido")]
-public class PedidoController : ControllerBase
+public class PedidoController(IPedidoService pedidoService, IHttpContextAccessor httpContextAccessor) : ControllerBase
 {
-    private readonly IPedidoService _pedidoService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public PedidoController(IPedidoService pedidoService, IHttpContextAccessor httpContextAccessor)
-    {
-        _pedidoService = pedidoService;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IPedidoService _pedidoService = pedidoService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     [HttpPost]
     public void Inserir([FromBody] PedidoDTO pedido)

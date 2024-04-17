@@ -1,4 +1,3 @@
-using Autenticacao.Application.AutoMappers;
 using Autenticacao.Application.DTOs;
 using Autenticacao.Domain.Models;
 

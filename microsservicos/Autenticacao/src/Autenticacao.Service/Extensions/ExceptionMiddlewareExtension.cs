@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Builder;
 using Autenticacao.Service.Middlewares;
 
 namespace Autenticacao.Service.Extensions;

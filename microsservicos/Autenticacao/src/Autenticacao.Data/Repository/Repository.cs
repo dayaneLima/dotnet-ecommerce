@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Autenticacao.Data.Context;
 using Autenticacao.Domain.Repository.Core;
+using Autenticacao.Domain.Models.Core;
 
 namespace Autenticacao.Data.Repository;
 
-public abstract class Repository<T> : IRepository<T> where T : class
+public abstract class Repository<T> : IRepository<T> where T : Entity
 {
     protected readonly AutenticacaoContext _context;
     public IUnitOfWork UnitOfWork => _context;
@@ -26,12 +27,14 @@ public abstract class Repository<T> : IRepository<T> where T : class
         if (entity is not null) _dbSet.Remove(entity);
     }
 
-    public virtual IEnumerable<T> ObterTodos() => _dbSet.ToList();
+    public virtual Task<T?> ObterPorId(int id) => _dbSet.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
+
+    public virtual async Task<IEnumerable<T>> ObterTodos() => await _dbSet.ToListAsync();
 
     public void DetachLocal(Func<T, bool> predicate)
     {
         var local = _context.Set<T>().Local.Where(predicate).FirstOrDefault();
-        if (local != null) _context.Entry(local).State = EntityState.Detached;
+        if (local is not null) _context.Entry(local).State = EntityState.Detached;
     }
 
     public void Dispose() => _context.Dispose();

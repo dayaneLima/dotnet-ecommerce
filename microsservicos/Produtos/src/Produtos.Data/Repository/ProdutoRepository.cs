@@ -1,7 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+
 using Produtos.Domain.Models;
 using Produtos.Domain.Repository;
 using Produtos.Data.Context;
-using Microsoft.EntityFrameworkCore;
 
 namespace Produtos.Data.Repository;
 

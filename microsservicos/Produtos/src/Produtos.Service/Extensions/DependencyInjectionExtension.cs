@@ -1,5 +1,3 @@
-
-
 using Produtos.CrossCutting.IoC;
 
 namespace Produtos.Service.Extensions;

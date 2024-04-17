@@ -16,18 +16,12 @@ public class ErrorDTO
     [JsonPropertyName("descriptions")]
     public ICollection<ErrorModel> Descriptions { get; set; }
 
-    public ErrorDTO()
-    {
-        Descriptions = new List<ErrorModel>();
-    }
+    public ErrorDTO() => Descriptions = new List<ErrorModel>();
 
     public void AddError(string description, string propertyName = "sumary")
     {
-        Descriptions.Add(new ErrorModel {Description = description, PropertyName = propertyName});
+        Descriptions.Add(new ErrorModel(description, propertyName));
     }
     
-    public override string ToString()
-    {
-        return JsonSerializer.Serialize(this);
-    }
+    public override string ToString() => JsonSerializer.Serialize(this);
 }

@@ -1,5 +1,4 @@
 using System.Text;
-using Autenticacao.Services.Handlers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -26,16 +25,8 @@ public static class AutenticationJwtExtension
         {
             jwt.RequireHttpsMetadata = false;
             jwt.SaveToken = true;
-            // jwt.SecurityTokenValidators.Clear();
-            // jwt.SecurityTokenValidators.Add(new CustomJwtValidationHandler());
             jwt.TokenValidationParameters = new TokenValidationParameters
             {
-                // RequireSignedTokens = true,
-                // ValidateLifetime = false,
-                // ClockSkew = TimeSpan.Zero,
-                // ValidateActor = false,
-                // ValidateTokenReplay = false,
-
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JWT:Secret"] ?? "")),
                 ValidateIssuer = false,

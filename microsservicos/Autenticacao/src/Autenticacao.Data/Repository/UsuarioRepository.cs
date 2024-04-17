@@ -1,7 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+
 using Autenticacao.Domain.Models;
 using Autenticacao.Domain.Repository;
 using Autenticacao.Data.Context;
-using Microsoft.EntityFrameworkCore;
 
 namespace Autenticacao.Data.Repository;
 

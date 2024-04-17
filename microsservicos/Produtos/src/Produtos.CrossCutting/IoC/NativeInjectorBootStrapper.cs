@@ -1,10 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+
 using Produtos.Domain.Repository;
 using Produtos.Data.Repository;
 using Produtos.Data.Context;
 using Produtos.Application.Interfaces;
 using Produtos.Application.Services;
-using Microsoft.Extensions.Configuration;
 
 namespace Produtos.CrossCutting.IoC;
 

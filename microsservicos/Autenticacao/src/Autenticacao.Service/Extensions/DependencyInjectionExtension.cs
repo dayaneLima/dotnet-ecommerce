@@ -1,5 +1,3 @@
-
-
 using Autenticacao.CrossCutting.IoC;
 
 namespace Autenticacao.Service.Extensions;

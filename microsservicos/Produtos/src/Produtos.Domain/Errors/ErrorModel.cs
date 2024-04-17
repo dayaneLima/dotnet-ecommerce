@@ -2,11 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Produtos.Domain.Errors;
 
-public class ErrorModel
-{
-    [JsonPropertyName("propertyName")]
-    public string? PropertyName { get; set; }
-
-    [JsonPropertyName("description")]
-    public string? Description { get; set; }
-}
+public record ErrorModel(
+    [property: JsonPropertyName("propertyName")] string? PropertyName, 
+    [property: JsonPropertyName("propertyName")] string? Description
+);
