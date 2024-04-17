@@ -115,7 +115,7 @@ docker-compose up -d
 Todos os microsserviços utilizam do Swagger para documentação e consumo das APIs.
 
 ### Autenticação
-**Endpoint de login:**
+**Endpoint de login (USAR ESSE USUÁRIO PARA AUTENTICAÇÃO):**
 
 [POST] /v1/autenticacao/login
 
@@ -137,8 +137,12 @@ Exemplo:
 
 ```json
 {
-  "email": "teste@teste.com",
-  "senha": "123456"
+  "nome": "mouse",
+  "descricao": "mouse gammer",
+  "valor": 100.99,
+  "categoria": "periféricos",
+  "quantidadeDisponivel": 200,
+  "urlImagem": "https://picsum.photos/200/300"
 }
 ```
 
