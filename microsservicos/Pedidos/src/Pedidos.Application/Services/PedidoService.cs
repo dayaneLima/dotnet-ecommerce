@@ -40,7 +40,7 @@ public class PedidoService : IPedidoService
         ValidarAtribuirPrecoVendaItensPedido(pedido, produtosDTO);
 
         pedido.Status = StatusPedido.EM_PROCESSAMENTO;
-        pedido.ValorTotal =  CalcularValorTotalPedido(pedido);
+        pedido.ValorTotal = CalcularValorTotalPedido(pedido);
         
         var validacao = pedido.Validar();
         if (!validacao.IsValid) throw new EntityErrorException($"Dados do pedido inválido(s)", validacao);
