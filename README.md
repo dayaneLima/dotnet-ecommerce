@@ -8,46 +8,44 @@ Este repositório contém a estrutura e os arquivos necessários para criar 3 mi
 - **microsservicos**: Projetos .NET 8 para os microsserviços.
 - **data**: Pasta não rastreada pelo git, usada pelos contêineres para armazenamento de dados.
 
-## Microsserviços e Bancos de Dados
+## Microsserviços e Bancos de Dados no Container
 
 Os microsserviços são divididos da seguinte forma:
 
-- **autenticacao-api**: 
--- Microsserviço para autenticação de usuários. 
--- Executa na porta 5000.
+- **autenticacao-api**:
+  - Microsserviço para autenticação de usuários. 
+  - Executa na porta 5000.
 - **pedidos-api**: 
--- Microsserviço para cadastro de pedidos. 
--- Executa na porta 5001.
+  - Microsserviço para cadastro de pedidos. 
+  - Executa na porta 5001.
 - **produtos-api**: 
--- Microsserviço para CRUD de produtos. 
--- Executa na porta 5002.
+  - Microsserviço para CRUD de produtos. 
+  - Executa na porta 5002.
 
 Cada microsserviço é conectado a um banco de dados MySQL, conforme abaixo:
 
 - **mysql-autenticacao**: 
--- Banco de dados para o microsserviço de autenticação. 
--- Executa na porta externa 3316 e interna 3306.
+  - Banco de dados para o microsserviço de autenticação. 
+  - Executa na porta externa 3316 e interna 3306.
 - **mysql-pedidos**: 
--- Banco de dados para o microsserviço de pedidos. 
--- Executa na porta externa 3326 e interna 3306.
+  - Banco de dados para o microsserviço de pedidos. 
+  - Executa na porta externa 3326 e interna 3306.
 - **mysql-produtos**: 
--- Banco de dados para o microsserviço de produtos. 
--- Executa na porta externa 3336 e interna 3306.
-
-## Serviços Adicionais
+  - Banco de dados para o microsserviço de produtos. 
+  - Executa na porta externa 3336 e interna 3306.
 
 Além dos microsserviços e bancos de dados, há outros serviços necessários para o funcionamento do sistema:
 
 - **rabbitmq-ecommerce**: 
--- Fila RabbitMQ para processamento de pedidos. 
--- Interface web na porta 15672 e acesso CLI na porta 25672.
+  - Fila RabbitMQ para processamento de pedidos. 
+  - Interface web na porta 15672 e acesso CLI na porta 25672.
 - **redis-ecommerce**: 
--- Redis para cache. 
--- Executa na porta 6379.
+  - Redis para cache. 
+  - Executa na porta 6379.
 - **redisinsight-ecommerce**: 
--- Não é necessária sua execução para a aplicação 
--- Interface web para visualizar registros no Redis. 
--- Executa na porta externa 8010 e interna 8001.
+  - Não é necessária sua execução para a aplicação 
+  - Interface web para visualizar registros no Redis. 
+  - Executa na porta externa 8010 e interna 8001.
 
 ## Tecnologias Utilizadas
 
@@ -90,6 +88,12 @@ Foram empregadas camadas para manter a estrutura organizada:
  - **Data**: Contém a parte de infraestrutura, que cuida da conexão com o banco de dados e a implementação do mesmo.
  - **CrossCutting**: Responsável por registrar as injeções de dependência
  - **Application**: Contém as classes necessárias que provêm serviço para a aplicação. Contém então as Services, Data Transfer Objects e os Mapeamentos.
+
+## Endpoints e Exemplos de Chamadas da API
+
+## Instruções para Execução
+
+## Futuras Melhorias
 
 ## Observações
 
