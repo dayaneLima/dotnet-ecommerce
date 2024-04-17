@@ -18,7 +18,7 @@ public class UsuarioValidation : AbstractValidator<Usuario>
 
         RuleFor(e => e.Senha)
             .NotEmpty().WithMessage("Senha é obrigatória")
-            .MinimumLength(6).WithMessage("Senha deve ter no mínimo 6 caracteres.")
+            .MinimumLength(6).WithMessage("Senha deve ter no mínimo 6 caracteres")
             .MaximumLength(255).WithMessage("Senha não pode passar de 255 caracteres")
             .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$").WithMessage("A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula e um número");
     }
