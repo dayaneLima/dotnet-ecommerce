@@ -5,6 +5,7 @@ services:
       container_name: autenticacao-api
       build: 
         context: ./
+        target: "development"
       tty: true
       ports:
         - "5000:5000"
@@ -12,6 +13,7 @@ services:
         - ../microsservicos/Autenticacao:/app
       environment:
         "ASPNETCORE_URLS": "https://+;http://+"
+      command: sh -c "cd src/Autenticacao.Service && dotnet ef database update --context AutenticacaoContext --project ../Autenticacao.Data/Autenticacao.Data.csproj && dotnet run"
       depends_on:
         - mysql-autenticacao
       networks: 
@@ -41,11 +43,13 @@ services:
       container_name: pedidos-api
       build: 
         context: ./
+        target: "development"
       tty: true
       ports:
         - "5001:5001"
       volumes:
         - ../microsservicos/Pedidos:/app
+      command: sh -c "cd src/Pedidos.Service && dotnet ef database update --context PedidoContext --project ../Pedidos.Data/Pedidos.Data.csproj && dotnet run"
       depends_on:
         - mysql-pedidos
       networks: 
@@ -75,11 +79,13 @@ services:
       container_name: produtos-api
       build: 
         context: ./
+        target: "development"
       tty: true
       ports:
         - "5002:5002"
       volumes:
         - ../microsservicos/Produtos:/app
+      command: sh -c "cd src/Produtos.Service && dotnet ef database update --context ProdutoContext --project ../Produtos.Data/Produtos.Data.csproj && dotnet run"
       depends_on:
         - mysql-produtos
       networks: 

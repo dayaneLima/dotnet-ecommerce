@@ -1,5 +1,5 @@
 # Informa ao Docker qual container iremos utilizar
-FROM ubuntu:24.04
+FROM ubuntu:24.04 as base
 
 # Instalacao libs necessarias
 RUN apt-get update
@@ -18,7 +18,7 @@ ENV PATH="${PATH}:/root/.dotnet/tools"
 ENV TZ=America/Recife
 RUN apt-get update && apt-get install -y tzdata
 
-CMD tail -f /dev/null
+# CMD tail -f /dev/null
 
 # Cria o diretório codes na raiz do container
 RUN mkdir -p /app
@@ -26,3 +26,13 @@ RUN mkdir -p /app
 # Define o diretório codes como diretório de trabalho
 # Isso vai espelhar a pasta codes no diretório debian-core para a pasta codes no container
 WORKDIR /app
+
+
+# Ambiente de desenvolvimento
+FROM base as development
+
+COPY . .
+WORKDIR /app
+
+# Restaurar dependências e compilar o código
+RUN dotnet restore && dotnet build

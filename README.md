@@ -67,6 +67,7 @@ Além das bibliotecas padrão do .NET 8, foram utilizadas outras para desenvolvi
 - **StackExchangeRedis**: Cliente para interagir com o Redis.
 - **RabbitMQ.Client**: Cliente para interagir com o RabbitMQ.
 - **Refit**: Cliente HTTP declarativo.
+- **Swagger**: Usada para definir, documentar e consumir APIs REST. 
 - **xunit**: Framework de teste para .NET.
 - **Moq**: Biblioteca de mocking para teste.
 
@@ -89,11 +90,86 @@ Foram empregadas camadas para manter a estrutura organizada:
  - **CrossCutting**: Responsável por registrar as injeções de dependência
  - **Application**: Contém as classes necessárias que provêm serviço para a aplicação. Contém então as Services, Data Transfer Objects e os Mapeamentos.
 
-## Endpoints e Exemplos de Chamadas da API
 
 ## Instruções para Execução
 
+- Entre na pasta container:
+```
+cd container
+```
+- Execute o comando para subir os containers:
+```
+docker-compose up -d
+```
+- No docker-compose.yml e no Dockerfile já tem as instruções que sobem a aplicação e executam as migrations para criação dos bancos de dados.
+- Todo microsserviços utilizam o Swagger. Caso tenha mantido as portas do docker-file.yml, segue abaixo as urls:
+  - [Autenticação](https://localhost:5000/swagger)
+  - [Produtos](https://localhost:5002/swagger)
+  - [Pedidos](https://localhost:5001/swagger) 
+
+## Endpoints e Exemplos de Chamadas da API
+Todos os microsserviços utilizam do Swagger para documentação e consumo das APIs.
+
+### Autenticação
+**Endpoint de login:**
+
+[POST] /v1/autenticacao/login
+
+Exemplo:
+
+```json
+{
+  "email": "teste@teste.com",
+  "senha": "123456"
+}
+```
+
+### Produto
+**Endpoint de login:**
+
+[POST] /v1/autenticacao/login
+
+Exemplo:
+
+```json
+{
+  "email": "teste@teste.com",
+  "senha": "123456"
+}
+```
+
+### Pedido
+**Endpoint de login:**
+
+[POST] /v1/autenticacao/login
+
+Exemplo:
+
+```json
+{
+  "email": "teste@teste.com",
+  "senha": "123456"
+}
+```
+
 ## Futuras Melhorias
+
+### Testes de unidade
+- Criação de mais casos de teste nos 3 microsserviços.
+
+### Microsserviço de Autenticação
+- Criar para ele ser o responsável por validar os tokens JWT de todos os microsserviços, além da geração de token para o usuário.
+- Criar CRUD de usuário
+
+### Microsserviço de Produto
+- A rota de listagem de produtos está aberta, pois ainda não foi implementada no microsserviço de Pedido para que o mesmo se autentique antes de chamar este microsserviço.
+Aguardar a alteração do microsserviço de Pedidos e deixar a rota privada.
+- Aguardar a implementação de validação de token JWT para APIs no microsserviço de Autenticação, e começar a chamar o mesmo, ao invés de validar internamente.
+- Criar lógica para abatimento de estoque do produto, lendo uma fila RabbitMQ.
+
+### Microsserviço de Pedido
+- Aguardar a implementação de validação de token JWT para APIs no microsserviço de Autenticação, e começar a chamar o mesmo, ao invés de validar internamente.
+- Criar lógica para publicar em uma fila RabbitMQ para que o microsserviço de Produto cuide do abatimento de estoque.
 
 ## Observações
 
