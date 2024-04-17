@@ -93,6 +93,11 @@ Foram empregadas camadas para manter a estrutura organizada:
 
 ## Instruções para Execução
 
+- Caso esteja em um sistema operacional windows, e por ter um arquivo .sh em 3 containers,
+ é necessário executar o comando abaixo antes de clonar o repositório, devido a quebra de linha de linux e windows:
+```
+  git config --global core.autocrlf false
+```
 - Entre na pasta container:
 ```
 cd container
