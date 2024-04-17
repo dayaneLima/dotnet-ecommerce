@@ -97,6 +97,10 @@ Foram empregadas camadas para manter a estrutura organizada:
 ```
 cd container
 ```
+- Build a imagem:
+```
+docker-compose build
+```
 - Execute o comando para subir os containers:
 ```
 docker-compose up -d
@@ -125,9 +129,9 @@ Exemplo:
 ```
 
 ### Produto
-**Endpoint de login:**
+**Endpoint de cadastro de produto:**
 
-[POST] /v1/autenticacao/login
+[POST] /v1/produtos
 
 Exemplo:
 
@@ -139,16 +143,20 @@ Exemplo:
 ```
 
 ### Pedido
-**Endpoint de login:**
+**Endpoint de cadastro de pedido:**
 
-[POST] /v1/autenticacao/login
+[POST] /v1/pedidos
 
 Exemplo:
 
 ```json
 {
-  "email": "teste@teste.com",
-  "senha": "123456"
+  "itensPedido": [
+    {
+      "quantidade": 2,
+      "idProduto": 1
+    }
+  ]
 }
 ```
 
@@ -156,6 +164,10 @@ Exemplo:
 
 ### Testes de unidade
 - Criação de mais casos de teste nos 3 microsserviços.
+
+### Logs
+- Implementar monitoramento de logs.
+- Uma abordagem inicial pode envolver a publicação básica dos logs em uma fila e a criação de outro microsserviço para consumi-los e armazená-los em uma estrutura, como o Elasticsearch.
 
 ### Microsserviço de Autenticação
 - Criar para ele ser o responsável por validar os tokens JWT de todos os microsserviços, além da geração de token para o usuário.

@@ -4,7 +4,7 @@ FROM ubuntu:24.04 as base
 # Instalacao libs necessarias
 RUN apt-get update
 RUN apt-get install -y curl wget apt-utils apt-transport-https lsb-release gnupg dirmngr
-RUN apt-get install -y lsof nano
+RUN apt-get install -y lsof nano netcat-openbsd
 RUN apt-get install -y libc6 libgcc-s1 liblttng-ust1 libssl3 libstdc++6 libunwind8 zlib1g
 
 # Instalacao .net
@@ -33,6 +33,3 @@ FROM base as development
 
 COPY . .
 WORKDIR /app
-
-# Restaurar dependências e compilar o código
-RUN dotnet restore && dotnet build
