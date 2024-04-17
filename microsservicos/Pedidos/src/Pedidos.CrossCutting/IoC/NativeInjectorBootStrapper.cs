@@ -33,7 +33,7 @@ public class NativeInjectorBootStrapper
     {
         var serviceProvider = services.BuildServiceProvider();
         var tokenService = serviceProvider.GetRequiredService<ITokenService>();
-        var httpClient = new HttpClient(HttpClientHandlerIgnoreCertificate()){ BaseAddress = new Uri(configuration["Integrations:Produto:Url"]!)}
+        var httpClient = new HttpClient(HttpClientHandlerIgnoreCertificate()){ BaseAddress = new Uri(configuration["Integrations:Produto:Url"]!)};
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenService.GerarAccesToken());
 
         return httpClient;
