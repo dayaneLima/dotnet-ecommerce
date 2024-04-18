@@ -15,7 +15,11 @@ services:
       environment:
         "ASPNETCORE_URLS": "https://+;http://+"
       command: >
-        sh -c "tail -f /dev/null"
+        sh -c "chmod +x /app/wait-for-mysql.sh &&
+              /app/wait-for-mysql.sh &&
+              cd src/Autenticacao.Service && 
+              dotnet ef database update --context AutenticacaoContext --project ../Autenticacao.Data/Autenticacao.Data.csproj &&
+              dotnet run"
       depends_on:
         - mysql-autenticacao
       networks: 
@@ -53,7 +57,11 @@ services:
         - ../microsservicos/Pedidos:/app
       restart: always
       command: >
-        sh -c "tail -f /dev/null"
+        sh -c "chmod +x /app/wait-for-mysql.sh &&
+              /app/wait-for-mysql.sh &&
+              cd src/Pedidos.Service && 
+              dotnet ef database update --context PedidoContext --project ../Pedidos.Data/Pedidos.Data.csproj &&
+              dotnet run"
       depends_on:
         - mysql-pedidos
       networks: 
@@ -91,7 +99,11 @@ services:
         - ../microsservicos/Produtos:/app
       restart: always
       command: >
-        sh -c "tail -f /dev/null"
+        sh -c "chmod +x /app/wait-for-mysql.sh &&
+              /app/wait-for-mysql.sh &&
+              cd src/Produtos.Service && 
+              dotnet ef database update --context ProdutoContext --project ../Produtos.Data/Produtos.Data.csproj &&
+              dotnet run"
       depends_on:
         - mysql-produtos
       networks: 
