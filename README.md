@@ -84,11 +84,11 @@ Foram empregados diversos padrões de projeto para manter a estrutura organizada
 ## Camadas
 Foram empregadas camadas para manter a estrutura organizada:
 
- - **Service**: Contém o projeto web que fornece a API
- - **Domain**: Contém as entidades e contratos usadas para a aplicação
+ - **Service**: Contém o projeto web que fornece a API.
+ - **Domain**: Contém as entidades e contratos usadas para a aplicação.
  - **Data**: Contém a parte de infraestrutura, que cuida da conexão com o banco de dados e a implementação do mesmo.
- - **CrossCutting**: Responsável por registrar as injeções de dependência
- - **Application**: Contém as classes necessárias que provêm serviço para a aplicação. Contém então as Services, Data Transfer Objects e os Mapeamentos.
+ - **CrossCutting**: Responsável por registrar as injeções de dependência.
+ - **Application**: Contém as classes necessárias que provêm serviço para a aplicação. Contém então as Services, Data Transfer Objects e os mapeamentos.
 
 
 ## Instruções para Execução
@@ -119,12 +119,16 @@ docker-compose up -d
 ## Endpoints e Exemplos de Chamadas da API
 Todos os microsserviços utilizam do Swagger para documentação e consumo das APIs.
 
+Os microsserviços de Produtos e Pedidos necessitam de autenticação, é necessário então primeiramente consumir o microsserviço de Autenticação, utilizando as credenciais informadas na explicação abaixo.
+
 ### Autenticação
-**Endpoint de login (USAR ESSE USUÁRIO PARA AUTENTICAÇÃO):**
+#### Endpoint de login (USAR ESSE USUÁRIO PARA AUTENTICAÇÃO)
+
+Primeiro endpoint a ser consumido.
 
 [POST] /v1/autenticacao/login
 
-Exemplo:
+Exemplo de envio:
 
 ```json
 {
@@ -133,12 +137,28 @@ Exemplo:
 }
 ```
 
+Exemplo de retorno:
+
+```json
+{
+  "token": "string",
+  "tokenType": "string",
+  "usuario": {
+    "id": 0,
+    "nome": "string"
+  }
+}
+```
+
+
 ### Produto
-**Endpoint de cadastro de produto:**
+#### Endpoint de cadastro de produto
+
+Antes de realizar um pedido, é necessário cadastrar os produtos e se atentar aos ids dos mesmos, para se utilizar no microsserviço de Pedido.
 
 [POST] /v1/produtos
 
-Exemplo:
+Exemplo de envio:
 
 ```json
 {
@@ -151,12 +171,125 @@ Exemplo:
 }
 ```
 
+Exemplo de retorno:
+
+```json
+{
+  "id": 1,
+  "nome": "mouse",
+  "descricao": "mouse gammer",
+  "valor": 100.99,
+  "categoria": "periféricos",
+  "quantidadeDisponivel": 200,
+  "urlImagem": "https://picsum.photos/200/300"
+}
+```
+
+
+#### Endpoint de consulta de produtos
+
+É possível enviar via query string os ids dos produtos desejados, separados por vírgula.
+
+[GET] /v1/produtos
+
+Exemplo de envio:
+
+```json
+{
+  "nome": "mouse",
+  "descricao": "mouse gammer",
+  "valor": 100.99,
+  "categoria": "periféricos",
+  "quantidadeDisponivel": 200,
+  "urlImagem": "https://picsum.photos/200/300"
+}
+```
+
+Exemplo de retorno:
+
+```json
+[
+  {
+    "id": 1,
+    "nome": "mouse",
+    "descricao": "mouse gammer",
+    "valor": 100.99,
+    "categoria": "periféricos",
+    "quantidadeDisponivel": 200,
+    "urlImagem": "https://picsum.photos/200/300"
+  }
+]
+```
+
+
+#### Endpoint de atualização de produtos
+
+[PUT] /v1/produtos/{idProduto}
+
+Exemplo de envio:
+
+```json
+{
+  "nome": "mouse",
+  "descricao": "mouse gammer",
+  "valor": 105.99,
+  "categoria": "periféricos",
+  "quantidadeDisponivel": 200,
+  "urlImagem": "https://picsum.photos/200/300"
+}
+```
+
+Exemplo de retorno:
+
+```json
+{
+  "id": 1,
+  "nome": "mouse",
+  "descricao": "mouse gammer",
+  "valor": 105.99,
+  "categoria": "periféricos",
+  "quantidadeDisponivel": 200,
+  "urlImagem": "https://picsum.photos/200/300"
+}
+```
+
+
+#### Endpoint de consulta de um produto específico
+
+[GET] /v1/produtos/{idProduto}
+
+Exemplo de retorno:
+
+```json
+{
+  "id": 1,
+  "nome": "mouse",
+  "descricao": "mouse gammer",
+  "valor": 105.99,
+  "categoria": "periféricos",
+  "quantidadeDisponivel": 200,
+  "urlImagem": "https://picsum.photos/200/300"
+}
+```
+
+
+#### Endpoint de exclusão de um produto
+
+É utilizado softdelete, ou seja, o produto não será excluído definitivamente do banco de dados, e sim marcado como excluído, através da coluna DataHorarioExclusao.
+
+[DELETE] /v1/produtos/{idProduto}
+
+
 ### Pedido
-**Endpoint de cadastro de pedido:**
+#### Endpoint de cadastro de pedido
+
+Assim que o pedido é solicitado, é recebido apenas o status 200, sem demais informações, pois o mesmo será executado utilizando uma fila de processamento.
+
+Pra consultar o pedido cadastrado, é necessário consumir o endpoint de consulta de pedidos.
 
 [POST] /v1/pedidos
 
-Exemplo:
+Exemplo de envio:
 
 ```json
 {
@@ -166,6 +299,82 @@ Exemplo:
       "idProduto": 1
     }
   ]
+}
+```
+
+
+#### Endpoint de consulta de pedidos
+
+É retornado somente os pedidos do usuário autenticado.
+
+[GET] /v1/pedidos/
+
+Exemplo de retorno:
+
+```json
+[
+  {
+    "id": 1,
+    "valorTotal": 201.98,
+    "status": "EM_PROCESSAMENTO",
+    "dataHorarioCadastro": "2024-04-18T07:10:04.868497"
+  }
+]
+```
+
+
+#### Endpoint de consulta de um pedido específico
+
+É retornado somente o pedido do usuário autenticado.
+
+[GET] /v1/pedidos/{idPedido}
+
+Exemplo de retorno:
+
+```json
+{
+  "id": 1,
+  "valorTotal": 201.98,
+  "status": "EM_PROCESSAMENTO",
+  "dataHorarioCadastro": "2024-04-18T07:10:04.868497"
+}
+```
+
+
+#### Endpoint de consulta de pedidos detalhados
+
+É retornado somente os pedidos do usuário autenticado.
+
+[GET] /v1/pedidos/detalhado
+
+Exemplo de retorno:
+
+```json
+[
+  {
+    "id": 1,
+    "valorTotal": 201.98,
+    "status": "EM_PROCESSAMENTO",
+    "dataHorarioCadastro": "2024-04-18T07:10:04.868497"
+  }
+]
+```
+
+
+#### Endpoint de consulta de um pedido específico detalhado
+
+É retornado somente o pedido do usuário autenticado.
+
+[GET] /v1/pedidos/{idPedido}/detalhado
+
+Exemplo de retorno:
+
+```json
+{
+  "id": 1,
+  "valorTotal": 201.98,
+  "status": "EM_PROCESSAMENTO",
+  "dataHorarioCadastro": "2024-04-18T07:10:04.868497"
 }
 ```
 
@@ -180,11 +389,9 @@ Exemplo:
 
 ### Microsserviço de Autenticação
 - Criar para ele ser o responsável por validar os tokens JWT de todos os microsserviços, além da geração de token para o usuário.
-- Criar CRUD de usuário
+- Criar CRUD de usuário.
 
 ### Microsserviço de Produto
-- A rota de listagem de produtos está aberta, pois ainda não foi implementada no microsserviço de Pedido para que o mesmo se autentique antes de chamar este microsserviço.
-Aguardar a alteração do microsserviço de Pedidos e deixar a rota privada.
 - Aguardar a implementação de validação de token JWT para APIs no microsserviço de Autenticação, e começar a chamar o mesmo, ao invés de validar internamente.
 - Criar lógica para abatimento de estoque do produto, lendo uma fila RabbitMQ.
 
