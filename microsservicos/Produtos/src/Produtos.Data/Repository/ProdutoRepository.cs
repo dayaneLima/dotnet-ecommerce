@@ -14,4 +14,9 @@ public class ProdutoRepository : Repository<Produto>, IProdutoRepository
     {
         return await _dbSet.Where(e =>  ids.Contains(e.Id)).ToListAsync<Produto>();
     }
+
+    public async Task<IEnumerable<Produto>> ListarPorIdsIncluindoExcluidos(List<int> ids)
+    {
+        return await _dbSet.IgnoreQueryFilters().Where(e =>  ids.Contains(e.Id)).ToListAsync<Produto>();
+    }
 }

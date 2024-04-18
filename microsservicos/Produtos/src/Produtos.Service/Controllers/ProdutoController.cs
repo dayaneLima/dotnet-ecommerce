@@ -42,12 +42,12 @@ public class ProdutoController(IProdutoService produtoService) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ProdutoRetornoDTO>> Listar([FromQuery] string? ids)
+    public async Task<IEnumerable<ProdutoRetornoDTO>> Listar([FromQuery] string? ids, [FromQuery] bool incluirExcluidos = false)
     {
         var idsTratados = ids?.Split(',').Select(str => Convert.ToInt32(str)).ToList();
 
         if (idsTratados?.Count > 0)
-            return await _produtoService.ListarPorIds(idsTratados);
+            return await _produtoService.ListarPorIds(idsTratados, incluirExcluidos);
         
         return await _produtoService.Listar();
     }

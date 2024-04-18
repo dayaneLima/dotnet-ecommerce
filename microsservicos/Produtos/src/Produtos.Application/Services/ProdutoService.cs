@@ -70,10 +70,18 @@ public class ProdutoService(IProdutoRepository produtoRepository, IMapper mapper
         return _mapper.Map<IEnumerable<ProdutoRetornoDTO>>(produtos);
     }
 
-    public async Task<IEnumerable<ProdutoRetornoDTO>> ListarPorIds(List<int> ids)
+    public async Task<IEnumerable<ProdutoRetornoDTO>> ListarPorIds(List<int> ids, bool incluirExcluidos)
     {
-        var produtos = await _produtoRepository.ListarPorIds(ids);
+        var produtos = await ListarPorIdsVerificandoExcluidos(ids, incluirExcluidos);;
         return _mapper.Map<IEnumerable<ProdutoRetornoDTO>>(produtos);
+    }
+
+    private async Task<IEnumerable<Produto>> ListarPorIdsVerificandoExcluidos(List<int> ids, bool incluirExcluidos) 
+    {
+        if (incluirExcluidos)
+            return await _produtoRepository.ListarPorIdsIncluindoExcluidos(ids);
+
+        return await _produtoRepository.ListarPorIds(ids);        
     }
 }
   
