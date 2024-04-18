@@ -71,7 +71,7 @@ Além das bibliotecas padrão do .NET 8, foram utilizadas outras para desenvolvi
 - **xunit**: Framework de teste para .NET.
 - **Moq**: Biblioteca de mocking para teste.
 
-## Padrões
+## Padrões e Práticas
 
 Foram empregados diversos padrões de projeto para manter a estrutura organizada e escalável:
 
@@ -80,15 +80,16 @@ Foram empregados diversos padrões de projeto para manter a estrutura organizada
 - **IoC**: Injeção de dependência para facilitar a troca de implementações.
 - **Arquitetura em camadas**: Divisão clara entre a lógica de negócios, a interface do usuário e a infraestrutura.
 - **Conceitos do SOLID**: Princípios de design para facilitar a manutenção e extensibilidade do código.
+- **Soft delete**: Prática de marcar registros como "excluídos" em vez de removê-los permanentemente do banco de dados
 
 ## Camadas
 Foram empregadas camadas para manter a estrutura organizada:
 
- - **Service**: Contém o projeto web que fornece a API.
- - **Domain**: Contém as entidades e contratos usadas para a aplicação.
- - **Data**: Contém a parte de infraestrutura, que cuida da conexão com o banco de dados e a implementação do mesmo.
- - **CrossCutting**: Responsável por registrar as injeções de dependência.
- - **Application**: Contém as classes necessárias que provêm serviço para a aplicação. Contém então as Services, Data Transfer Objects e os mapeamentos.
+ - **Service**: Esta camada abriga o projeto da web que oferece a interface de programação de aplicativos (API), responsável por fornecer serviços para os clientes.
+ - **Domain**: Aqui são definidas as entidades principais da aplicação e os contratos que regem seu comportamento. É o coração da lógica de negócios, onde as regras essenciais são encapsuladas.
+ - **Data**: Esta camada cuida da interação com o banco de dados e sua implementação, garantindo a persistência dos dados. É responsável pela conexão com o banco de dados e pelas operações de leitura e gravação.
+ - **CrossCutting**: Responsável por registrar as dependências entre os diferentes componentes do sistema, garantindo que as instâncias necessárias estejam disponíveis quando solicitadas. Isso promove a modularidade e a manutenibilidade do código.
+ - **Application**: Aqui são implementadas as classes que fornecem os serviços específicos da aplicação. Esta camada contém as Services, que encapsulam a lógica de negócios, os Data Transfer Objects (DTOs), que são objetos utilizados para transferir dados entre as diferentes camadas, e os mapeamentos, que são responsáveis por transformar os objetos do domínio em DTOs e vice-versa.
 
 
 ## Instruções para Execução
@@ -110,8 +111,8 @@ docker-compose build
 ```
 docker-compose up -d
 ```
-- No docker-compose.yml e no Dockerfile já tem as instruções que sobem a aplicação e executam as migrations para criação dos bancos de dados.
-- Todo microsserviços utilizam o Swagger. Caso tenha mantido as portas do docker-file.yml, segue abaixo as urls:
+- As instruções necessárias para iniciar a aplicação e executar as migrações para criar os bancos de dados já estão configuradas tanto no docker-compose.yml quanto no Dockerfile.
+- Todos os microsserviços adotam o Swagger para documentação de suas APIs. Se as portas definidas no docker-compose.yml permaneceram inalteradas, abaixo estão as URLs correspondentes:
   - [Autenticação](https://localhost:5000/swagger)
   - [Produtos](https://localhost:5002/swagger)
   - [Pedidos](https://localhost:5001/swagger) 
@@ -119,7 +120,7 @@ docker-compose up -d
 ## Endpoints e Exemplos de Chamadas da API
 Todos os microsserviços utilizam do Swagger para documentação e consumo das APIs.
 
-Os microsserviços de Produtos e Pedidos necessitam de autenticação, é necessário então primeiramente consumir o microsserviço de Autenticação, utilizando as credenciais informadas na explicação abaixo.
+Os microsserviços de Produtos e Pedidos requerem autenticação. Portanto, é crucial primeiro acessar o microsserviço de Autenticação, utilizando as credenciais fornecidas na explicação abaixo.
 
 ### Autenticação
 #### Endpoint de login (USAR ESSE USUÁRIO PARA AUTENTICAÇÃO)
@@ -154,7 +155,7 @@ Exemplo de retorno:
 ### Produto
 #### Endpoint de cadastro de produto
 
-Antes de realizar um pedido, é necessário cadastrar os produtos e se atentar aos ids dos mesmos, para se utilizar no microsserviço de Pedido.
+Antes de fazer um pedido, é crucial cadastrar os produtos e observar seus IDs para utilizá-los no microsserviço de Pedidos.
 
 [POST] /v1/produtos
 
@@ -188,23 +189,9 @@ Exemplo de retorno:
 
 #### Endpoint de consulta de produtos
 
-É possível enviar via query string os ids dos produtos desejados, separados por vírgula.
-Também é possível informar se deseja incluir os produtos excluídos, através de query string, com o parâmetro incluirExcluidos (true ou false).
+Você pode enviar os IDs dos produtos desejados separados por vírgula através da query string. Além disso, é possível indicar se deseja incluir os produtos excluídos, usando o parâmetro "incluirExcluidos" na query string, com os valores "true" ou "false".
 
 [GET] /v1/produtos
-
-Exemplo de envio:
-
-```json
-{
-  "nome": "mouse",
-  "descricao": "mouse gammer",
-  "valor": 100.99,
-  "categoria": "periféricos",
-  "quantidadeDisponivel": 200,
-  "urlImagem": "https://picsum.photos/200/300"
-}
-```
 
 Exemplo de retorno:
 
@@ -276,7 +263,7 @@ Exemplo de retorno:
 
 #### Endpoint de exclusão de um produto
 
-É utilizado softdelete, ou seja, o produto não será excluído definitivamente do banco de dados, e sim marcado como excluído, através da coluna DataHorarioExclusao.
+É aplicado o conceito de soft delete, o que significa que o produto não será removido permanentemente do banco de dados. Em vez disso, ele será marcado como excluído, utilizando a coluna DataHorarioExclusao.
 
 [DELETE] /v1/produtos/{idProduto}
 
@@ -284,9 +271,8 @@ Exemplo de retorno:
 ### Pedido
 #### Endpoint de cadastro de pedido
 
-Assim que o pedido é solicitado, é recebido apenas o status 200, sem demais informações, pois o mesmo será executado utilizando uma fila de processamento.
+Após a solicitação do pedido, apenas o status 200 é recebido, sem informações adicionais, pois o pedido será processado por meio de uma fila de execução. Para visualizar o pedido registrado, é necessário acessar o endpoint de consulta de pedidos.
 
-Pra consultar o pedido cadastrado, é necessário consumir o endpoint de consulta de pedidos.
 
 [POST] /v1/pedidos
 
@@ -306,7 +292,7 @@ Exemplo de envio:
 
 #### Endpoint de consulta de pedidos
 
-É retornado somente os pedidos do usuário autenticado.
+Apenas os pedidos do usuário autenticado são retornados.
 
 [GET] /v1/pedidos/
 
@@ -326,7 +312,7 @@ Exemplo de retorno:
 
 #### Endpoint de consulta de um pedido específico
 
-É retornado somente o pedido do usuário autenticado.
+Apenas o pedido do usuário autenticado é retornado.
 
 [GET] /v1/pedidos/{idPedido}
 
@@ -344,7 +330,7 @@ Exemplo de retorno:
 
 #### Endpoint de consulta de pedidos detalhados
 
-É retornado somente os pedidos do usuário autenticado, juntamente com os detalhes dos produtos.
+São retornados apenas os pedidos do usuário autenticado, acompanhados dos detalhes dos produtos.
 
 [GET] /v1/pedidos/detalhado
 
@@ -390,7 +376,7 @@ Exemplo de retorno:
 
 #### Endpoint de consulta de um pedido específico detalhado
 
-É retornado somente o pedido do usuário autenticado, com os detalhes dos produtos.
+Apenas o pedido do usuário autenticado é retornado, juntamente com os detalhes dos produtos.
 
 [GET] /v1/pedidos/{idPedido}/detalhado
 
@@ -418,23 +404,24 @@ Exemplo de retorno:
 ## Futuras Melhorias
 
 ### Testes de unidade
-- Criação de mais casos de teste nos 3 microsserviços.
+- Criação de mais casos de teste para os 3 microsserviços.
 
 ### Logs
 - Implementar monitoramento de logs.
 - Uma abordagem inicial pode envolver a publicação básica dos logs em uma fila e a criação de outro microsserviço para consumi-los e armazená-los em uma estrutura, como o Elasticsearch.
 
 ### Microsserviço de Autenticação
-- Criar para ele ser o responsável por validar os tokens JWT de todos os microsserviços, além da geração de token para o usuário.
+- Alterar o serviço para que ele seja o responsável por validar os tokens JWT de todos os microsserviços.
+- Modificar o microsserviço para incluir a autenticação de serviços, além de usuários.
 - Criar CRUD de usuário.
 
 ### Microsserviço de Produto
-- Aguardar a implementação de validação de token JWT para APIs no microsserviço de Autenticação, e começar a chamar o mesmo, ao invés de validar internamente.
-- Criar lógica para abatimento de estoque do produto, lendo uma fila RabbitMQ.
+- Aguardar a implementação da validação de tokens JWT para APIs no microsserviço de Autenticação e iniciar a chamada a ele em vez de realizar a validação internamente.
+- Desenvolver uma lógica para redução do estoque do produto, com base na leitura de uma fila RabbitMQ.
 
 ### Microsserviço de Pedido
-- Aguardar a implementação de validação de token JWT para APIs no microsserviço de Autenticação, e começar a chamar o mesmo, ao invés de validar internamente.
-- Criar lógica para publicar em uma fila RabbitMQ para que o microsserviço de Produto cuide do abatimento de estoque.
+- Aguardar a implementação da validação de tokens JWT para APIs no microsserviço de Autenticação e iniciar a chamada a ele em vez de realizar a validação internamente.
+- Implementar a lógica para publicar mensagens em uma fila RabbitMQ, para que o microsserviço de Produto possa gerenciar o abatimento de estoque.
 
 ## Observações
 
