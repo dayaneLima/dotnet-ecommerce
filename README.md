@@ -1,6 +1,6 @@
 # Microsserviços para E-commerce
 
-Este repositório contém a estrutura e os arquivos necessários para criar 3 microsserviços para um sistema de e-commerce, utilizando .NET 8 e Docker para orquestração de contêineres.
+Este repositório contém a estrutura e os arquivos necessários para criar três microsserviços para um sistema de e-commerce, utilizando .NET 8 e Docker para orquestração de contêineres.
 
 ## Estrutura de pastas
 
@@ -94,7 +94,7 @@ Foram empregadas camadas para manter a estrutura organizada:
 
 ## Instruções para Execução
 
-- Caso esteja em um sistema operacional windows, e por ter um arquivo .sh em 3 containers,
+- Caso esteja em um sistema operacional windows, e por ter um arquivo .sh em três containers,
  é necessário executar o comando abaixo antes de clonar o repositório, devido a quebra de linha de linux e windows:
 ```
   git config --global core.autocrlf false
@@ -403,8 +403,11 @@ Exemplo de retorno:
 
 ## Futuras Melhorias
 
+### Projeto Core
+- Desenvolver um projeto central que contenha os elementos compartilhados entre os três microsserviços, visando evitar a duplicação de código. A proposta é criar um projeto Core, que será importado nos demais. Esse projeto incluirá, por exemplo, modelos, exceções e interfaces que são compartilhados por todos.
+
 ### Testes de unidade
-- Criação de mais casos de teste para os 3 microsserviços.
+- Criação de mais casos de teste para os três microsserviços.
 
 ### Logs
 - Implementar monitoramento de logs.
